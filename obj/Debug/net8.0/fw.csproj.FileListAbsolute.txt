@@ -26,3 +26,4 @@ F:\Programas\pixelwalle\engine\obj\Debug\net8.0\refint\fw.dll
 F:\Programas\pixelwalle\engine\obj\Debug\net8.0\fw.pdb
 F:\Programas\pixelwalle\engine\obj\Debug\net8.0\fw.genruntimeconfig.cache
 F:\Programas\pixelwalle\engine\obj\Debug\net8.0\ref\fw.dll
+F:\Programas\pixelwalle\engine\obj\Debug\net8.0\fw.sourcelink.json

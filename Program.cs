@@ -33,11 +33,12 @@ public static class Program
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.ScanTokens();
         Parser parser = new Parser(tokens);
-        Expr expression = parser.Parse();
+    
+        List<Stmt> statements = parser.Parse();
 
         // detener si hubo un error de sintaxis
         if (hadError) return;
-            interpreter.Interpret(expression);
+            interpreter.Interpret(statements);
     }
     public static void Error(int linea, string message)
     {   

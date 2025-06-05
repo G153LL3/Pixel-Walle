@@ -15,12 +15,13 @@ public class Scanner
     private static readonly Dictionary<string, TokenType> keywords = new Dictionary<string, TokenType>
     {
         // palabras clave del lenguaje
-        // añadir if else while print
+        // añadir if else while
         // añadir funciones 
 
         {"GoTo", TokenType.GOTO},
         {"true", TokenType.TRUE},
         {"false", TokenType.FALSE},
+        {"print", TokenType.PRINT},
     };
 
     public Scanner(string source)

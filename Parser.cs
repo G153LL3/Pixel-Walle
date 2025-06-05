@@ -3,17 +3,16 @@ using System.Collections.Generic;
 
 public class Parser // convierte los tokens en un ast usando analisis descendente recurivo
 {
-    public Expr? Parse()
+    public List<Stmt> Parse()
     {
-        try
+        List<Stmt> statements = new List<Stmt>();
+        while (!IsAtEnd())
         {
-            return Expression();
+            statements.Add(Statement());
         }
-        catch (ParseError)
-        {
-            return null;
-        }
+        return statements;
     }
+
     private class ParseError : Exception
     {
         public ParseError() : base() { }
@@ -38,6 +37,25 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
     public Parser(List<Token> tokens)
     {
         this.tokens = tokens;
+    }
+    private Expr Expression()
+    {
+        return Equality();
+    }
+    private Stmt Statement()
+    {
+        if (Match(TokenType.PRINT)) return PrintStatement();
+        return ExpressionStatement();
+    }
+    private Stmt PrintStatement() 
+    {
+        Expr value = Expression();
+        return new Stmt.Print(value);
+    }
+    private Stmt ExpressionStatement() 
+    {
+        Expr expr = Expression();
+        return new Stmt.Expression(expr);
     }
     private Expr Equality()
     {
@@ -192,9 +210,5 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
 
             Advance();
         }
-    }
-    private Expr Expression()
-    {
-        return Equality();
     }
 }

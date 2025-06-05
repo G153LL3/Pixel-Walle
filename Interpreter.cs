@@ -3,7 +3,20 @@ using System.Collections.Generic;
 
 public class Interpreter 
 {
-    
+    public void Interpret(List<Stmt> statements)
+    {
+        try
+        {   
+            foreach (Stmt statement in statements)
+            {
+                Execute(statement);
+            }
+        }
+        catch (RuntimeError error)
+        {
+            Program.RuntimeError(error);
+        }
+    }
     public Object VisitLiteralExpr(Expr.Literal expr) // devuelve el valor almacenado en el nodo
     {
         return expr.value;
@@ -54,6 +67,21 @@ public class Interpreter
     {
         return expr.accept(this);
     }
+    private void Execute(Stmt stmt)
+    {
+        stmt.accept(this);
+    }
+    public Object VisitExpressionStmt(Stmt.Expression stmt)
+    {
+        Evaluate(stmt.expression);
+        return null;
+    }
+    public Object VisitPrintStmt(Stmt.Print stmt)
+    {
+        Object value = Evaluate(stmt.expression);
+        Console.WriteLine(value);
+        return null;
+    }
     public Object VisitBinaryExpr(Expr.Binary expr)
     {
         Object left = Evaluate(expr.left);
@@ -98,7 +126,7 @@ public class Interpreter
         }
         return null;
     }
-    public int Bpow (int b, int e) // exponenciacion binaria (x fin algo de cp)
+    public int Bpow(int b, int e) // exponenciacion binaria (x fin algo de cp)
     {
         if (e == 0) return 1;
         if (e % 2 == 0)
@@ -107,17 +135,5 @@ public class Interpreter
             return t*t;
         }
         return Bpow(b, e-1) * b;        
-    }
-    public void Interpret(Expr expression)
-    {
-        try
-        {   
-            Object value = Evaluate(expression);
-            Console.WriteLine(value);
-        }
-        catch (RuntimeError error)
-        {
-            Program.RuntimeError(error);
-        }
-    }
+    } 
 }
