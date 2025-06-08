@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\Programas\\pixelwalle\\engine\\fw.csproj",
+      "projectUniqueName": "F:\\Programas\\engine\\fw.csproj",
       "projectName": "fw",
-      "projectPath": "F:\\Programas\\pixelwalle\\engine\\fw.csproj",
+      "projectPath": "F:\\Programas\\engine\\fw.csproj",
       "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "F:\\Programas\\pixelwalle\\engine\\obj\\",
+      "outputPath": "F:\\Programas\\engine\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config"

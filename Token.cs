@@ -17,7 +17,7 @@ public enum TokenType
     NOT_EQUAL, AND, OR,
 
     // Operador de asignacion
-    ASSIGNAMENT,
+    ARROW,
 
     // Literales
     NUMBER, IDENTIFIER,

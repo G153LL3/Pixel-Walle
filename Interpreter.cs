@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 public class Interpreter 
 {
+    private Environment environment = new Environment();
     public void Interpret(List<Stmt> statements)
     {
         try
@@ -76,12 +77,27 @@ public class Interpreter
         Evaluate(stmt.expression);
         return null;
     }
+    public Object VisitVariableExpr(Expr.Variable expr)
+    {
+        return environment.Get(expr.name); 
+    }
     public Object VisitPrintStmt(Stmt.Print stmt)
     {
         Object value = Evaluate(stmt.expression);
         Console.WriteLine(value);
         return null;
     }
+    public Object VisitVarStmt(Stmt.Var stmt) 
+    {
+        Object value = null;
+        if (stmt.initializer != null) 
+        {
+            value = Evaluate(stmt.initializer);
+        }
+        environment.Define(stmt.name.Lexeme, value);
+        return null;
+    }
+    
     public Object VisitBinaryExpr(Expr.Binary expr)
     {
         Object left = Evaluate(expr.left);

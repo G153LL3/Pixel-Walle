@@ -62,7 +62,7 @@ public class Scanner
                 AddToken(Match('*') ? TokenType.POW : TokenType.MULT); 
                 break;
             case '<':   
-                AddToken(Match('=') ? TokenType.LESS_EQUAL : Match('_') ? TokenType.ASSIGNAMENT : TokenType.LESS);
+                AddToken(Match('=') ? TokenType.LESS_EQUAL : Match('_') ? TokenType.ARROW : TokenType.LESS);
                 break;
             case '>':
                 AddToken(Match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER);

@@ -19,7 +19,22 @@ public abstract class Stmt
             return interpreter.VisitExpressionStmt(this);
         }
     }
-
+    public class Var : Stmt
+    {
+        public Token name;
+        public Expr initializer; 
+    
+        public Var(Token name, Expr initializer)
+        {
+            this.name = name;
+            this.initializer = initializer;
+        }
+    
+        public override Object accept(Interpreter interpreter)
+        {
+            return interpreter.VisitVarStmt(this);
+        }
+    }
     public class Print : Stmt
     {
         public Expr expression;

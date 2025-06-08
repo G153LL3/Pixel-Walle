@@ -1,9 +1,25 @@
+using System;
+using System.Collections.Generic;
+
+
 public abstract class Expr
 { 
     // define estructura del ast
 
     public abstract Object accept (Interpreter interpreter);
 
+    public class Variable : Expr
+    {
+        public Token name;
+        public Variable(Token name)
+        {
+            this.name = name;
+        }
+        public override Object accept(Interpreter interpreter)
+        {
+            return interpreter.VisitVariableExpr(this);
+        }
+    }
     public class Binary : Expr
     {
         public Expr left;

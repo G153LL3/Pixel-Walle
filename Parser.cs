@@ -8,7 +8,7 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         List<Stmt> statements = new List<Stmt>();
         while (!IsAtEnd())
         {
-            statements.Add(Statement());
+            statements.Add(Declaration());
         }
         return statements;
     }
@@ -42,6 +42,19 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
     {
         return Equality();
     }
+    private Stmt Declaration() 
+    {
+        try 
+        {
+            if (Check(TokenType.IDENTIFIER) && CheckNext(TokenType.ARROW)) return VarDeclaration();
+            return Statement();
+        } 
+        catch (ParseError error) 
+        {
+            Synchronize();
+            return null;
+        }
+    }
     private Stmt Statement()
     {
         if (Match(TokenType.PRINT)) return PrintStatement();
@@ -50,11 +63,25 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
     private Stmt PrintStatement() 
     {
         Expr value = Expression();
+        // consumir salto de linea
         return new Stmt.Print(value);
+    }
+    private Stmt VarDeclaration() 
+    {
+        Token name = Consume(TokenType.IDENTIFIER, "Expect variable name.");
+        Expr initializer = null;
+    
+        if (Match(TokenType.ARROW)) 
+        {
+            initializer = Expression();
+        }
+        // consumir salto de linea
+        return new Stmt.Var(name, initializer);
     }
     private Stmt ExpressionStatement() 
     {
         Expr expr = Expression();
+        // consumir salto de linea
         return new Stmt.Expression(expr);
     }
     private Expr Equality()
@@ -131,8 +158,11 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         if (Match(TokenType.NUMBER))
         {
             return new Expr.Literal(Previous().Literal);
+        }   
+        if (Match(TokenType.IDENTIFIER))
+        {
+            return new Expr.Variable(Previous());
         }
-
         if (Match(TokenType.LEFT_PAREN))
         {
             Expr expr = Expression();
@@ -162,6 +192,11 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
     {   
         if (IsAtEnd()) return false;
         return Peek().Type == type;
+    }
+    private bool CheckNext(TokenType type) // mira elsiguiente token
+    {
+        if (IsAtEnd() || current + 1 >= tokens.Count) return false;
+        return tokens[current + 1].Type == type;
     }
 
     private Token Advance()
@@ -198,12 +233,12 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
             switch (Peek().Type)
             {
                 case TokenType.GOTO:
-                
+                case TokenType.PRINT:
                 /*
                 case TokenType.If:
                 case TokenType.Else:
                 case TokenType.While:
-                case TokenType.Print:
+                
                 */
                     return;
             }
