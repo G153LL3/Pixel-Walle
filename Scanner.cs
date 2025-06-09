@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class Scanner
 {
     private readonly string source; // codigo 
+    private readonly List<string> errors;
     private readonly List<Token> tokens = new List<Token>(); // tokens encontrados
     private int start = 0; // inicio del token actual
     private int current = 0; // pos actual deltoken
@@ -24,9 +25,10 @@ public class Scanner
         {"print", TokenType.PRINT},
     };
 
-    public Scanner(string source)
+    public Scanner(string source, List<string> errors)
     {
         this.source = source;
+        this.errors = errors;
     }
 
     public List<Token> ScanTokens()
@@ -108,6 +110,7 @@ public class Scanner
                     Identifier();
                 } else {
                     Program.Error(line, "Unexpected character.");
+                    Advance(); // prueba
                 }
                 break;
         }

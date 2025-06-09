@@ -1,70 +1,82 @@
 ﻿using System;
+using System.Text;
 using System.Collections.Generic;
 
 public static class Program
 { 
 
     private static readonly Interpreter interpreter = new Interpreter();
+    private static readonly List<string> errors = new List<string>();
+
+
     static bool hadError = false;
     private static bool hadRuntimeError = false;
 
     public static void Main(string[] args)
     {
-       
-        RunPrompt();
+        StringBuilder inputBuilder = new StringBuilder();
 
-    }
-    private static void RunPrompt()
-    {
-        // bucle infinito
-        // espera que el usuario escriba codigo
-        for (;;)
+        while (true)
         {
-            Console.WriteLine("> ");
+            Console.Write("> ");  
             string line = Console.ReadLine();
-            if (line == null) break;
-            
-            Run(line);
-            hadError = false;
+
+            // terminar entrada por ahora
+            if (line == null || line.Trim().Equals("salir", StringComparison.OrdinalIgnoreCase))
+                break;
+        
+            // linea vacia = ejecuta todo
+            if (string.IsNullOrWhiteSpace(line))
+            {   
+                if (inputBuilder.Length > 0)
+                {
+                    Run(inputBuilder.ToString());
+                    inputBuilder.Clear();  
+                }
+            }
+            else
+            {
+                inputBuilder.AppendLine(line);
+            }
         }
-    }   
+    }
     private static void Run(string source)
     {
-        Scanner scanner = new Scanner(source);
+        errors.Clear(); // limpiar errores anteriores
+        Scanner scanner = new Scanner(source, errors);
         List<Token> tokens = scanner.ScanTokens();
         Parser parser = new Parser(tokens);
     
         List<Stmt> statements = parser.Parse();
-
-        // detener si hubo un error de sintaxis
-        if (hadError) return;
-            interpreter.Interpret(statements);
+        if (errors.Count > 0)
+        {
+            Console.WriteLine("\nErrores encontrados:");
+            foreach (var error in errors)
+            {
+                Console.WriteLine($"- {error}");
+            }
+            return;
+        }
+        interpreter.Interpret(statements);
     }
     public static void Error(int linea, string message)
     {   
         // reporta errores
-        Report(linea, "", message);
+        errors.Add($"[Line {linea}] {message}");
     }
     public static void RuntimeError(RuntimeError error)
     {
         Console.Error.WriteLine(error.Message + 
-            $"\n[line {error.token.Line}]");
+            $"\n[Line {error.token.Line}]");
         hadRuntimeError = true;
     }
     private static void Report(int line, string where, string message)
     {
-        Console.Error.WriteLine("[línea " + line + "] Error" + where + ": " + message);
+        Console.Error.WriteLine("[Line " + line + "] Error" + where + ": " + message);
         hadError = true;
     }
     public static void Error(Token token, string message)
     {
-        if (token.Type == TokenType.EOF)
-        {
-            Report(token.Line, " at end", message);
-        }
-        else
-        {
-            Report(token.Line, $" at '{token.Lexeme}'", message);
-        }
+        errors.Add($"[Line {token.Line}] {message}");
     }    
 }

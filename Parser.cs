@@ -225,7 +225,7 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         return new ParseError();
     }
     private void Synchronize() // busca ptos de resincronizacion
-    {
+    {                          // evita que los errores en cascada afecten 
         Advance();
 
         while (!IsAtEnd())
