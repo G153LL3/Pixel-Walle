@@ -5,7 +5,7 @@ public enum TokenType
 {
     // Agrupadores 
     COMMA, LEFT_PAREN, RIGHT_PAREN,
-    LEFT_BRACKET, RIGHT_BRACKET,
+    LEFT_BRACKET, RIGHT_BRACKET, NEWLINE,
 
     // Operadores
     DIV, PLUS, MINUS, MULT, MOD,
@@ -30,6 +30,7 @@ public enum TokenType
     // Fin de archivo
     EOF
 }  
+
 public class Token
 {
     public readonly TokenType Type;

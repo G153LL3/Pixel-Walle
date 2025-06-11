@@ -5,18 +5,15 @@ using System.Collections.Generic;
 public class Scanner
 {
     private readonly string source; // codigo 
-    private readonly List<string> errors;
     private readonly List<Token> tokens = new List<Token>(); // tokens encontrados
     private int start = 0; // inicio del token actual
     private int current = 0; // pos actual deltoken
     private int line = 1; // linea actual
     private int column = 0; // columna actual
-    //private string expression = "";
 
     private static readonly Dictionary<string, TokenType> keywords = new Dictionary<string, TokenType>
     {
         // palabras clave del lenguaje
-        // añadir if else while
         // añadir funciones 
 
         {"GoTo", TokenType.GOTO},
@@ -25,10 +22,9 @@ public class Scanner
         {"print", TokenType.PRINT},
     };
 
-    public Scanner(string source, List<string> errors)
+    public Scanner(string source)
     {
         this.source = source;
-        this.errors = errors;
     }
 
     public List<Token> ScanTokens()
@@ -99,8 +95,9 @@ public class Scanner
             // ignora espacios en blanco
                 break;
             case '\n':
+                //AddToken(TokenType.NEWLINE); 
                 line++;
-            break;    
+                break;    
             default:
 
                 if (IsDigit(c)) 
@@ -110,11 +107,12 @@ public class Scanner
                     Identifier();
                 } else {
                     Program.Error(line, "Unexpected character.");
-                    Advance(); // prueba
+                    Advance();
                 }
                 break;
         }
     }
+
     private void Identifier() // procesa identificadores y palabras clave
     {
         while (IsAlphaNumeric(Peek())) Advance(); 
@@ -128,7 +126,8 @@ public class Scanner
         } else {
             Program.Error(line, "Unexpected character.");
         }
-    }   
+    }
+
     private bool IsAlpha(char c) 
     {
         return (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z'
@@ -136,10 +135,12 @@ public class Scanner
 
         // no se si quitar las mayusculas
     }
+
     private bool IsAlphaNumeric(char c)
     {
         return(IsAlpha(c) || IsDigit(c));
     }
+
     private void Number() // verifica si el string es un num
     {
         while (IsDigit(Peek())) Advance();
@@ -155,17 +156,17 @@ public class Scanner
         current++;
         return true;
     }
-    
+
     private char Peek() // retorna el char del string a analizar
     {   
         if (IsAtEnd()) return '\0';
         return source[current];
     }
+
     private bool IsDigit(char c) // true si es un num
     {
         return c >= '0' && c <= '9';
     }
-
 
     private bool IsAtEnd() // verifica que estemos en pos valida de string
     {
@@ -175,7 +176,19 @@ public class Scanner
     private char Advance() // consume el siguiente caracter
     {
         current++;
-        return source[current - 1];
+        char c = source[current - 1];
+        /*
+        if (c == '\n')
+        {
+            line++;
+            column = 0;
+        } 
+        else 
+        {
+            column = 0;
+        }
+        */
+        return c;
     }
 
     private void AddToken(TokenType type)

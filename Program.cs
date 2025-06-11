@@ -8,7 +8,6 @@ public static class Program
     private static readonly Interpreter interpreter = new Interpreter();
     private static readonly List<string> errors = new List<string>();
 
-
     static bool hadError = false;
     private static bool hadRuntimeError = false;
 
@@ -43,14 +42,23 @@ public static class Program
     private static void Run(string source)
     {
         errors.Clear(); // limpiar errores anteriores
-        Scanner scanner = new Scanner(source, errors);
+        Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.ScanTokens();
+         if (errors.Count > 0)
+        {
+            Console.WriteLine("\nErrors found:");
+            foreach (var error in errors)
+            {
+                Console.WriteLine($"- {error}");
+            }
+            return;
+        }
         Parser parser = new Parser(tokens);
     
         List<Stmt> statements = parser.Parse();
         if (errors.Count > 0)
         {
-            Console.WriteLine("\nErrores encontrados:");
+            Console.WriteLine("\nErrors found:");
             foreach (var error in errors)
             {
                 Console.WriteLine($"- {error}");
@@ -61,7 +69,6 @@ public static class Program
     }
     public static void Error(int linea, string message)
     {   
-        // reporta errores
         errors.Add($"[Line {linea}] {message}");
     }
     public static void RuntimeError(RuntimeError error)

@@ -4,6 +4,10 @@ using System.Collections.Generic;
 public class Interpreter 
 {
     private Environment environment = new Environment();
+    private readonly Dictionary<string, dynamic> variables = new Dictionary<string, dynamic>();
+    private readonly Dictionary<string, int> labels = new Dictionary<string, int>();
+    private int currentLine = 0;
+
     public void Interpret(List<Stmt> statements)
     {
         try
@@ -15,9 +19,17 @@ public class Interpreter
         }
         catch (RuntimeError error)
         {
-            Program.RuntimeError(error);
+            //Program.RuntimeError(error);
+            Console.WriteLine($"Runtime error: {error.Message}");
         }
     }
+    public object VisitLabelStmt(Stmt.Label stmt)
+    {
+        // solo registrar la etiqueta
+        labels[stmt.name.Lexeme] = labels.Count; 
+        return null;
+    }
+
     public Object VisitLiteralExpr(Expr.Literal expr) // devuelve el valor almacenado en el nodo
     {
         return expr.value;

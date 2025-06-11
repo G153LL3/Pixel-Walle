@@ -10,11 +10,12 @@ public class Environment
         if (values.ContainsKey(name.Lexeme))
         {
             return values[name.Lexeme];
+        } 
+        else 
+        {
+            return null;
         }
-        throw new RuntimeError(name,
-        "Undefined variable '" + name.Lexeme + "'.");
     }
-
     public void Define(string name, Object value) 
     {
         values[name] = value;

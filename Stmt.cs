@@ -3,8 +3,23 @@ using System.Collections.Generic;
 
 public abstract class Stmt
 {
-    public abstract object accept(Interpreter interpreter);
+    public abstract Object accept(Interpreter interpreter);
 
+    public class Label : Stmt
+    {
+        public Token name;
+
+        public Label(Token name)
+        {
+            this.name = name;
+        }
+
+        public override Object accept(Interpreter interpreter)
+        {
+            return interpreter.VisitLabelStmt(this);
+        }
+    }
+    
     public class Expression : Stmt
     {
         public Expr expression;
@@ -14,11 +29,12 @@ public abstract class Stmt
             this.expression = expression;
         }
         
-        public override object accept(Interpreter interpreter)
+        public override Object accept(Interpreter interpreter)
         {
             return interpreter.VisitExpressionStmt(this);
         }
     }
+
     public class Var : Stmt
     {
         public Token name;
@@ -35,6 +51,7 @@ public abstract class Stmt
             return interpreter.VisitVarStmt(this);
         }
     }
+    
     public class Print : Stmt
     {
         public Expr expression;
@@ -44,7 +61,7 @@ public abstract class Stmt
             this.expression = expression;
         }
         
-        public override object accept(Interpreter interpreter)
+        public override Object accept(Interpreter interpreter)
         {
             return interpreter.VisitPrintStmt(this);
         }

@@ -8,18 +8,16 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         List<Stmt> statements = new List<Stmt>();
         while (!IsAtEnd())
         {
-            statements.Add(Declaration());
+            try
+            {
+                statements.Add(Declaration());
+            }
+            catch (ParseError) 
+            {
+                Synchronize();
+            }
         }
         return statements;
-    }
-
-    private class ParseError : Exception
-    {
-        public ParseError() : base() { }
-    
-        public ParseError(string message) : base(message) { }
-
-        public ParseError(string message, Exception inner) : base(message, inner) { }
     }
    
     // Orden de precedencia 
@@ -30,35 +28,72 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
     // 5. Term (+, -)
     // 6. Comparison(<, <=, >, >=)
     // 7. Equality (==, !=)
-    
+    private bool hadErrorInCurrentDeclaration = false;
     private readonly List<Token> tokens; // tokens generados por lexer
     private int current = 0; // pos del token actual
+
 
     public Parser(List<Token> tokens)
     {
         this.tokens = tokens;
     }
+
     private Expr Expression()
     {
         return Equality();
     }
+    
     private Stmt Declaration() 
     {
-        try 
+        if (Check(TokenType.IDENTIFIER) && CheckNext(TokenType.ARROW))
         {
-            if (Check(TokenType.IDENTIFIER) && CheckNext(TokenType.ARROW)) return VarDeclaration();
+            return VarDeclaration();
+        }
+        else
+        {
             return Statement();
-        } 
-        catch (ParseError error) 
-        {
-            Synchronize();
-            return null;
         }
     }
+
     private Stmt Statement()
     {
+        
         if (Match(TokenType.PRINT)) return PrintStatement();
-        return ExpressionStatement();
+        /*
+        if (Check(TokenType.IDENTIFIER))
+        {
+            if (CheckNext(TokenType.ARROW))
+            {
+                return VarDeclaration();
+            }
+            else
+            {
+                return new Stmt.Expression(new Expr.Variable(Advance()));
+            }
+        }
+        */
+        if (Match(TokenType.NUMBER, TokenType.TRUE, TokenType.FALSE))
+        {
+            Error(Previous(), "Standalone literals are not allowed");
+            return null;
+        }
+        if (Check(TokenType.IDENTIFIER))
+        {
+            return new Stmt.Label(Advance());
+        }
+        
+        throw Error(Peek(), "Expect print statement, variable declaration, or label");
+        
+        return null; 
+        //Console.WriteLine("HERE");
+    }
+
+    private Stmt LabelStatement()
+    {
+        Token labelToken = Advance();
+        // consumir salto delinea
+        return new Stmt.Label(labelToken);
+    
     }
     private Stmt PrintStatement() 
     {
@@ -66,6 +101,7 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         // consumir salto de linea
         return new Stmt.Print(value);
     }
+
     private Stmt VarDeclaration() 
     {
         Token name = Consume(TokenType.IDENTIFIER, "Expect variable name.");
@@ -74,16 +110,18 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         if (Match(TokenType.ARROW)) 
         {
             initializer = Expression();
-        }
+        } 
         // consumir salto de linea
         return new Stmt.Var(name, initializer);
     }
+
     private Stmt ExpressionStatement() 
     {
         Expr expr = Expression();
         // consumir salto de linea
         return new Stmt.Expression(expr);
     }
+
     private Expr Equality()
     {
         Expr expr = Comparison();
@@ -95,6 +133,7 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         }
         return expr;
     }
+
     private Expr Comparison()
     {
         Expr expr = Term();
@@ -106,6 +145,7 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         }
         return expr;
     }
+
     private Expr Term()
     {
         Expr expr = Factor();
@@ -117,6 +157,7 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         }
         return expr;
     }
+
     private Expr Factor()
     {
         Expr expr = Exponent();
@@ -128,6 +169,7 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         }
         return expr;
     }
+
     private Expr Exponent() 
     {
         Expr expr = Unary();
@@ -150,6 +192,7 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         }
         return Primary();
     }
+    
     private Expr Primary()
     {   
         if (Match(TokenType.FALSE)) return new Expr.Literal(false);
@@ -170,7 +213,9 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
             return new Expr.Grouping(expr);
         }
         throw Error(Peek(), "Expect expression.");
+        return new Expr.Literal(null);
     }
+
     private bool Match(params TokenType[] types)
     {
         foreach (TokenType type in types)
@@ -183,16 +228,19 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         }
         return false;
     }
+
     private Token Consume(TokenType type, string message) 
     {
         if (Check(type)) return Advance();
         throw Error(Peek(), message);
     }
+
     private bool Check(TokenType type)
     {   
         if (IsAtEnd()) return false;
         return Peek().Type == type;
     }
+
     private bool CheckNext(TokenType type) // mira elsiguiente token
     {
         if (IsAtEnd() || current + 1 >= tokens.Count) return false;
@@ -219,31 +267,26 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
     {
         return tokens[current - 1];
     }
+
     private ParseError Error(Token token, string message) 
     {
         Program.Error(token, message);
         return new ParseError();
     }
+    
     private void Synchronize() // busca ptos de resincronizacion
-    {                          // evita que los errores en cascada afecten 
+    {                          // evita que los errores en cascada afecten
         Advance();
-
         while (!IsAtEnd())
         {
             switch (Peek().Type)
             {
-                case TokenType.GOTO:
                 case TokenType.PRINT:
-                /*
-                case TokenType.If:
-                case TokenType.Else:
-                case TokenType.While:
-                
-                */
+                //case TokenType.IDENTIFIER:
                     return;
             }
-
             Advance();
         }
     }
 }
+internal class ParseError : Exception { }
