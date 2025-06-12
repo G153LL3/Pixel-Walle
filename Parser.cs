@@ -28,6 +28,7 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
     // 5. Term (+, -)
     // 6. Comparison(<, <=, >, >=)
     // 7. Equality (==, !=)
+    // 8. Logic (&& ||)
     private bool hadErrorInCurrentDeclaration = false;
     private readonly List<Token> tokens; // tokens generados por lexer
     private int current = 0; // pos del token actual
@@ -40,7 +41,7 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
 
     private Expr Expression()
     {
-        return Equality();
+        return LogicOr();
     }
     
     private Stmt Declaration() 
@@ -120,6 +121,34 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         Expr expr = Expression();
         // consumir salto de linea
         return new Stmt.Expression(expr);
+    }
+
+    private Expr LogicOr()
+    {
+        Expr expr = LogicAnd();
+    
+        while (Match(TokenType.OR))
+        {
+            Token operador = Previous();
+            Expr right = LogicAnd();
+            expr = new Expr.Binary(expr, operador, right);
+        }
+    
+        return expr;
+    }
+
+    private Expr LogicAnd()
+    {
+        Expr expr = Equality();
+    
+        while (Match(TokenType.AND))
+        {
+            Token operador = Previous();
+            Expr right = Equality();
+            expr = new Expr.Binary(expr, operador, right);
+        }
+    
+        return expr;
     }
 
     private Expr Equality()

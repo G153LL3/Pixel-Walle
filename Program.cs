@@ -19,22 +19,17 @@ public static class Program
         {
             Console.Write("> ");  
             string line = Console.ReadLine();
-
+             if (string.IsNullOrWhiteSpace(line)) continue;
             // terminar entrada por ahora
             if (line == null || line.Trim().Equals("salir", StringComparison.OrdinalIgnoreCase))
-                break;
-        
-            // linea vacia = ejecuta todo
-            if (string.IsNullOrWhiteSpace(line))
-            {   
+            {
                 if (inputBuilder.Length > 0)
                 {
                     Run(inputBuilder.ToString());
                     inputBuilder.Clear();  
                 }
-            }
-            else
-            {
+                break;
+            } else {
                 inputBuilder.AppendLine(line);
             }
         }
@@ -53,6 +48,7 @@ public static class Program
             }
             return;
         }
+
         Parser parser = new Parser(tokens);
     
         List<Stmt> statements = parser.Parse();

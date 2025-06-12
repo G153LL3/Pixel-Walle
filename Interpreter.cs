@@ -117,6 +117,13 @@ public class Interpreter
 
         switch (expr.operador.Type)
         {
+            case TokenType.AND:
+                if (!IsTruthy(left)) return false;
+                return IsTruthy(right);
+            case TokenType.OR:
+                if (IsTruthy(left)) return true;
+                return IsTruthy(right);
+                
             case TokenType.NOT_EQUAL:  return !IsEqual(left, right);
             case TokenType.EQUAL_EQUAL: return IsEqual(left, right);
 
