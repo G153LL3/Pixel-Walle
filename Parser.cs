@@ -11,6 +11,10 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
             try
             {
                 statements.Add(Declaration());
+                ConsumeNewline();
+            
+                // consumir todos los saltos consecutivos
+                while (Match(TokenType.NEWLINE)) { }
             }
             catch (ParseError) 
             {
@@ -80,14 +84,11 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
     private Stmt LabelStatement()
     {
         Token labelToken = Advance();
-        // consumir salto delinea
         return new Stmt.Label(labelToken);
-    
     }
     private Stmt PrintStatement() 
     {
         Expr value = Expression();
-        // consumir salto de linea
         return new Stmt.Print(value);
     }
 
@@ -100,14 +101,12 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         {
             initializer = Expression();
         } 
-        // consumir salto de linea
         return new Stmt.Var(name, initializer);
     }
 
     private Stmt ExpressionStatement() 
     {
-        Expr expr = Expression();
-        // consumir salto de linea
+        Expr expr = Expression();       
         return new Stmt.Expression(expr);
     }
 
@@ -251,6 +250,15 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         if (Check(type)) return Advance();
         throw Error(Peek(), message);
     }
+    private void ConsumeNewline()
+    {
+        if (Check(TokenType.EOF)) return;
+    
+        // si ya hay un salto de línea o viene EOF, está bien
+        if (Check(TokenType.NEWLINE) || Check(TokenType.EOF)) return;
+    
+        throw Error(Peek(), "Expected newline after statement");
+    }   
 
     private bool Check(TokenType type)
     {   

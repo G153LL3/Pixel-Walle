@@ -96,6 +96,10 @@ public class Scanner
                 break;
             case '\n':
                 //AddToken(TokenType.NEWLINE); 
+                if (tokens.Count > 0 && tokens[^1].Type != TokenType.NEWLINE)
+                {
+                   AddToken(TokenType.NEWLINE);
+                }
                 line++;
                 break;    
             default:

@@ -36,7 +36,7 @@ public class Interpreter
             {
                 if (labels.ContainsKey(labelStmt.name.Lexeme))
                 {
-                    throw new RuntimeError(labelStmt.name, $"Label duplicado '{labelStmt.name.Lexeme}'.");
+                    throw new RuntimeError(labelStmt.name, $"Duplicate label '{labelStmt.name.Lexeme}'.");
                 }
                 labels[labelStmt.name.Lexeme] = i;
             }
