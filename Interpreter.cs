@@ -141,6 +141,12 @@ public class Interpreter
                 return (int)left + (int)right;
             case TokenType.DIV:
                 CheckNumberOperands(expr.operador, left, right);
+                int a = (int)right;
+                if (a == 0)
+                {
+                    throw new RuntimeError(expr.operador, "Division by zero is not allowed");
+                    
+                }
                 return (int)left / (int)right;
             case TokenType.MULT:
                 CheckNumberOperands(expr.operador, left, right);
