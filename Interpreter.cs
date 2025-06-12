@@ -49,6 +49,10 @@ public class Interpreter
         if (stmt.condition != null)
         {
             Object conditionValue = Evaluate(stmt.condition);
+            if (conditionValue is not bool)
+            {
+                throw new RuntimeError(stmt.label, "The condition must evaluate to a boolean value");
+            }
             shouldJump = IsTruthy(conditionValue);
         }
         if (shouldJump)
