@@ -20,6 +20,23 @@ public abstract class Stmt
         }
     }
     
+    public class GoTo : Stmt
+    {
+        public Token label;
+        public Expr condition;
+
+        public GoTo(Token label, Expr condition)
+        {
+            this.label = label;
+            this.condition = condition;
+        }
+
+        public override Object accept(Interpreter interpreter)
+        {
+            return interpreter.VisitGoToStmt(this);
+        }
+    }
+    
     public class Expression : Stmt
     {
         public Expr expression;

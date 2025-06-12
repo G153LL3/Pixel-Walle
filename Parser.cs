@@ -58,35 +58,23 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
 
     private Stmt Statement()
     {
-        
+        if (Match(TokenType.GOTO)) return GoToStatement();
         if (Match(TokenType.PRINT)) return PrintStatement();
-        /*
-        if (Check(TokenType.IDENTIFIER))
-        {
-            if (CheckNext(TokenType.ARROW))
-            {
-                return VarDeclaration();
-            }
-            else
-            {
-                return new Stmt.Expression(new Expr.Variable(Advance()));
-            }
-        }
-        */
-        if (Match(TokenType.NUMBER, TokenType.TRUE, TokenType.FALSE))
-        {
-            Error(Previous(), "Standalone literals are not allowed");
-            return null;
-        }
-        if (Check(TokenType.IDENTIFIER))
-        {
-            return new Stmt.Label(Advance());
-        }
-        
-        throw Error(Peek(), "Expect print statement, variable declaration, or label");
-        
+        if (Check(TokenType.IDENTIFIER)) return LabelStatement();
+            
+        throw Error(Peek(), "Expect print statement, variable declaration, or label"); // arreglar nombre del error        
         return null; 
-        //Console.WriteLine("HERE");
+    }
+    private Stmt GoToStatement()
+    {
+        Token gotoToken = Previous(); 
+        Consume(TokenType.LEFT_BRACKET, "Expect '[' after 'GoTo'");
+        Token label = Consume(TokenType.IDENTIFIER, "Expect label name after 'GoTo['"); // verificar que label exista
+        Consume(TokenType.RIGHT_BRACKET, "Expect ']' after label name");
+        Consume(TokenType.LEFT_PAREN, "Expect '(' after ']'");
+        Expr condition = Expression();
+        Consume(TokenType.RIGHT_PAREN, "Expect ')' after condition");
+        return new Stmt.GoTo(label, condition);
     }
 
     private Stmt LabelStatement()
@@ -311,7 +299,7 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
             switch (Peek().Type)
             {
                 case TokenType.PRINT:
-                //case TokenType.IDENTIFIER:
+                case TokenType.GOTO:
                     return;
             }
             Advance();

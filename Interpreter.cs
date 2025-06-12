@@ -11,22 +11,67 @@ public class Interpreter
     public void Interpret(List<Stmt> statements)
     {
         try
-        {   
-            foreach (Stmt statement in statements)
+        {    
+            CollectLabels(statements);
+            currentLine = 0;
+            while (currentLine < statements.Count)
             {
-                Execute(statement);
+                Execute(statements[currentLine]);
+                currentLine++;
             }
+
         }
         catch (RuntimeError error)
         {
-            //Program.RuntimeError(error);
             Console.WriteLine($"Runtime error: {error.Message}");
         }
+    }
+
+    private void CollectLabels(List<Stmt> statements)
+    {
+        labels.Clear();
+        for (int i = 0; i < statements.Count; i++)
+        {
+            if (statements[i] is Stmt.Label labelStmt)
+            {
+                if (labels.ContainsKey(labelStmt.name.Lexeme))
+                {
+                    throw new RuntimeError(labelStmt.name, $"Label duplicado '{labelStmt.name.Lexeme}'.");
+                }
+                labels[labelStmt.name.Lexeme] = i;
+            }
+        }
+    }
+
+    public Object VisitGoToStmt(Stmt.GoTo stmt)
+    {
+        bool shouldJump = true; // evaluar condicion
+        if (stmt.condition != null)
+        {
+            Object conditionValue = Evaluate(stmt.condition);
+            shouldJump = IsTruthy(conditionValue);
+        }
+        if (shouldJump)
+        {
+            if(labels.TryGetValue(stmt.label.Lexeme, out int targetLine))
+            {
+                if (targetLine == currentLine)
+                {
+                    throw new RuntimeError(stmt.label, "Infinite recursive jump detected");
+                }
+                currentLine = targetLine; // saltar
+            } 
+            else
+            {
+                 throw new RuntimeError(stmt.label, $"Label not defined '{stmt.label.Lexeme}'.");
+            }
+        }
+        return null;
     }
     public object VisitLabelStmt(Stmt.Label stmt)
     {
         // solo registrar la etiqueta
-        labels[stmt.name.Lexeme] = labels.Count; 
+        // labels[stmt.name.Lexeme] = labels.Count; 
         return null;
     }
 
@@ -123,7 +168,7 @@ public class Interpreter
             case TokenType.OR:
                 if (IsTruthy(left)) return true;
                 return IsTruthy(right);
-                
+
             case TokenType.NOT_EQUAL:  return !IsEqual(left, right);
             case TokenType.EQUAL_EQUAL: return IsEqual(left, right);
 
