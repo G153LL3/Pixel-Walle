@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Drawing;
 public class Walle
 {
-    
-    private void FloodFill(int x, int y, string color, int width, int height)
+
+   
+    public void FloodFill(int x, int y, string color, int width, int height)
     {
         Queue<(int, int)> pixels = new Queue<(int, int)>();
         pixels.Enqueue((x, y));
@@ -13,7 +14,7 @@ public class Walle
         {
             var (currentX, currentY) = pixels.Dequeue();
 
-            if (currentX < 0 || currentX >= width || 
+            if (currentX < 0 || currentX >= width ||
                 currentY < 0 || currentY >= height)
                 continue;
 

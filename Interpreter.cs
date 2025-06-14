@@ -79,8 +79,68 @@ public class Interpreter
                     throw new RuntimeError(null, "IsBrushColor argument must be integer");        
                 }
                 int size = (int)firstarg;
-                if (size != currentSize) return 0;
-                return 1;
+                if (size == currentSize) return 1;
+                return 0;
+
+            case "IsBrushColor":
+                // validar que solo tenga 1 argumento
+                if (expr.arguments.Count != 1)
+                {
+                    throw new RuntimeError(expr.name, "La función IsBrushColor solo acepta un argumento");
+                }
+                Object colorarg = Evaluate(expr.arguments[0]);
+                //comprobar q sea string
+                if (!(colorarg is string))
+                {
+                    throw new RuntimeError(expr.name, "Argumento invalido para IsBrushColor");
+                }
+                string colorName = (string)colorarg;
+                if (colorName == currentColor) return 1;
+                return 0;
+            case "IsCanvasColor":
+                if (expr.arguments.Count != 3)
+                {
+                    throw new RuntimeError(expr.name, "La función IsCanvasColor solo acepta 3 argumentos");
+                }
+                Object farg = Evaluate(expr.arguments[0]);
+                Object sarg = Evaluate(expr.arguments[1]);
+                Object targ = Evaluate(expr.arguments[2]);
+                if (!(farg is string) || !(sarg is int) || !(targ is int))
+                {
+                    throw new RuntimeError(expr.name, "Argumento invalido para IsCanvasColor");
+                }
+                string color = (string)farg;
+                int v = (int)sarg; int h = (int)targ;
+
+                int posh = currentX + h;
+                int posv = currentY + v;
+                if (posh < 0 || posh >= canvasWidth || posv < 0 || posv >= canvasHeight)
+                    return 0;
+                // comprobar si la casilla se pinto
+                return 0;
+            case "GetColorCount":    
+                if (expr.arguments.Count != 5)
+                {
+                    throw new RuntimeError(expr.name, "GetColorCount requiere 5 argumentos");
+                }
+                Object colors = Evaluate(expr.arguments[0]);
+                Object X1 = Evaluate(expr.arguments[1]);
+                Object Y1 = Evaluate(expr.arguments[2]);
+                Object X2 = Evaluate(expr.arguments[3]);
+                Object Y2 = Evaluate(expr.arguments[4]);
+
+                if (!(X1 is int) || !(X2 is int)|| !(Y1 is int) ||!(Y2 is int))
+                {
+                    throw new RuntimeError(expr.name, "Argumento invalido para GetColorCount");
+                }
+                string color1 = (string)colors;
+                int x1 = (int)X1;
+                int x2 = (int)X2;
+                int y1 = (int)Y1;
+                int y2 = (int)Y2;
+
+                //rango
+                return 0;
             default:
                 throw new RuntimeError(expr.name, $"Función no definida: {expr.name.Lexeme}");
         }
@@ -253,6 +313,7 @@ public class Interpreter
             // dibujar los cuatro lados del rectángulo
             Walle.DrawRectangleLines(left, top, right, bottom, currentColor, currentSize);
             */
+            
         }
         // actualizar el walle al centro
         currentX = centerX;

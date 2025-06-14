@@ -322,7 +322,6 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         throw Error(Peek(), "Expect expression.");
         return new Expr.Literal(null);
     }
-
     private Expr FunctionCall()
     {
         Token name = Advance();
@@ -332,17 +331,45 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         {
             do
             {
-                // Validar que sea variable o literal (no otra función)
-                if (Check(TokenType.IDENTIFIER) && CheckNext(TokenType.LEFT_PAREN))
+                if (name.Lexeme == "IsBrushColor" || name.Lexeme == "IsCanvasColor" || name.Lexeme == "GetColorCount ")
                 {
-                    throw Error(Peek(), "Functions are not allowed as arguments");
+                    arguments.Add(ParseArgument());
+                }
+                else
+                {
+                    if (Check(TokenType.IDENTIFIER) && CheckNext(TokenType.LEFT_PAREN))
+                    {
+                        throw Error(Peek(), "Functions are not allowed as arguments");
+                    }
+
+                    arguments.Add(Expression());
                 }
 
-                arguments.Add(Expression());
             } while (Match(TokenType.COMMA)); //arreglar 
         }
         Consume(TokenType.RIGHT_PAREN, "Expect ')' after arguments");
         return new Expr.FunctionCall(name, arguments);
+    }
+
+    private Expr ParseArgument()
+    {
+        if (Check(TokenType.IDENTIFIER))
+        {
+            Token colorToken = Advance();
+            return new Expr.Literal(colorToken.Lexeme);
+        }
+        // si es un número, tratarlo normalmente
+        if (Match(TokenType.NUMBER))
+        {
+            return new Expr.Literal(Previous().Literal);
+        }
+    
+        // si es una variable
+        if (Check(TokenType.IDENTIFIER))
+        {
+            return new Expr.Variable(Advance());
+        }
+        throw Error(Peek(), "Expect color name, number, or variable");    
     }
 
     private bool Match(params TokenType[] types)
