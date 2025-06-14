@@ -9,7 +9,6 @@ public class Scanner
     private int start = 0; // inicio del token actual
     private int current = 0; // pos actual deltoken
     private int line = 1; // linea actual
-    private int column = 0; // columna actual
 
     private static readonly Dictionary<string, TokenType> keywords = new Dictionary<string, TokenType>
     {
@@ -20,7 +19,26 @@ public class Scanner
         {"true", TokenType.TRUE},
         {"false", TokenType.FALSE},
         {"print", TokenType.PRINT},
+        
+        // instrucciones
+        {"Spawn", TokenType.SPAWN},
+        {"Size", TokenType.SIZE},
+        {"Color", TokenType.COLOR},
+        {"DrawLine", TokenType.DRAW_LINE},
+        {"DrawCircle", TokenType.DRAW_CIRCLE},
+        {"DrawRectangle", TokenType.DRAW_RECTANGLE},
+        {"Fill", TokenType.FILL},
+
+        //funciones
+        {"GetActualX", TokenType.GET_ACTUALX},
+        {"GetActualY", TokenType.GET_ACTUALY},
+        {"GetCanvasSize", TokenType.GET_CANVAS_SIZE},
+        {"GetColorCount", TokenType.GET_COLOR_COUNT},
+        {"IsBrushColor", TokenType.IS_BRUSH_COLOR},
+        {"IsBrushSize", TokenType.IS_BRUSH_SIZE},
+        {"IsCanvasColor", TokenType.IS_CANVAS_COLOR},
     };
+
 
     public Scanner(string source)
     {
@@ -95,7 +113,6 @@ public class Scanner
             // ignora espacios en blanco
                 break;
             case '\n':
-                //AddToken(TokenType.NEWLINE); 
                 if (tokens.Count > 0 && tokens[^1].Type != TokenType.NEWLINE)
                 {
                    AddToken(TokenType.NEWLINE);
@@ -181,17 +198,6 @@ public class Scanner
     {
         current++;
         char c = source[current - 1];
-        /*
-        if (c == '\n')
-        {
-            line++;
-            column = 0;
-        } 
-        else 
-        {
-            column = 0;
-        }
-        */
         return c;
     }
 

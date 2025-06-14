@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 public class Parser // convierte los tokens en un ast usando analisis descendente recurivo
 {
@@ -62,6 +63,13 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
 
     private Stmt Statement()
     {
+        if (Match(TokenType.SPAWN)) return SpawnStatement();
+        if (Match(TokenType.COLOR)) return ColorStatement();
+        if (Match(TokenType.SIZE)) return SizeStatement();
+        if (Match(TokenType.DRAW_LINE)) return Draw_LineStatement();
+        if (Match(TokenType.DRAW_CIRCLE)) return Draw_CircleStatement();
+        if (Match(TokenType.DRAW_RECTANGLE)) return Draw_RectangleStatement();
+        if (Match(TokenType.FILL)) return FillStatement();
         if (Match(TokenType.GOTO)) return GoToStatement();
         if (Match(TokenType.PRINT)) return PrintStatement();
         if (Check(TokenType.IDENTIFIER)) return LabelStatement();
@@ -69,18 +77,97 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         throw Error(Peek(), "Expect print statement, variable declaration, or label"); // arreglar nombre del error        
         return null; 
     }
+    private Stmt SpawnStatement()
+    {
+        Token spawnToken = Previous();
+        Consume(TokenType.LEFT_PAREN, "Expect '('");
+        Expr x = Expression();
+        Consume(TokenType.COMMA, "Expect ','");
+        Expr y = Expression();
+        Consume(TokenType.RIGHT_PAREN, "Expect ')'");
+        return new Stmt.Spawn(x, y);
+    }
+    private Stmt ColorStatement()
+    {
+        Token colorToken = Previous();
+        Consume(TokenType.LEFT_PAREN, "Expect '('");
+        Token label = Consume(TokenType.IDENTIFIER, "Expect color name after 'Color('");
+
+        Consume(TokenType.RIGHT_PAREN, "Expect ')'");
+        //return null;
+        return new Stmt.Color(label); 
+    }
+    private Stmt SizeStatement()
+    {
+        Token sizeToken = Previous();
+        Consume(TokenType.LEFT_PAREN, "Expect '('");
+        Expr k = Expression();
+        Consume(TokenType.RIGHT_PAREN, "Expect ')'");
+        //return null;
+        return new Stmt.Size(k);
+    }
+    private Stmt Draw_LineStatement()
+    {
+        Token drawlineToken = Previous();
+        Consume(TokenType.LEFT_PAREN, "Expect '('");
+        Expr dirX = Expression();
+        Consume(TokenType.COMMA, "Expect ','");
+        Expr dirY = Expression();
+        Consume(TokenType.COMMA, "Expect ','");
+        Expr distance = Expression();
+        Consume(TokenType.RIGHT_PAREN, "Expect ')'");
+        //return null;
+        return new Stmt.Draw_Line(dirX, dirY, distance);
+    }
+    private Stmt Draw_CircleStatement()
+    {
+        Token drawcircleToken = Previous();
+        Consume(TokenType.LEFT_PAREN, "Expect '('");
+        Expr dirX = Expression();
+        Consume(TokenType.COMMA, "Expect ','");
+        Expr dirY = Expression();
+        Consume(TokenType.COMMA, "Expect ','");
+        Expr radius = Expression();
+        Consume(TokenType.RIGHT_PAREN, "Expect ')'");
+        //return null;
+        return new Stmt.Draw_Circle(dirX, dirY, radius);
+    }
+    private Stmt Draw_RectangleStatement()
+    {
+        Token drawrectangleToken = Previous();
+        Consume(TokenType.LEFT_PAREN, "Expect '('");
+        Expr dirX = Expression();
+        Consume(TokenType.COMMA, "Expect ','");
+        Expr dirY = Expression();
+        Consume(TokenType.COMMA, "Expect ','");
+        Expr distance = Expression();
+        Consume(TokenType.COMMA, "Expect ','");
+        Expr width = Expression();
+        Consume(TokenType.COMMA, "Expect ','");
+        Expr height = Expression();
+        Consume(TokenType.RIGHT_PAREN, "Expect ')'");
+        //return null;
+        return new Stmt.Draw_Rectangle(dirX, dirY, distance, width, height);
+    }
+    private Stmt FillStatement()
+    {
+        Token fillToken = Previous();
+        Consume(TokenType.LEFT_PAREN, "Expect '('");
+        Consume(TokenType.RIGHT_PAREN, "Expect ')'");
+        //return null;
+        return new Stmt.Fill();
+    }
     private Stmt GoToStatement()
     {
-        Token gotoToken = Previous(); 
+        Token gotoToken = Previous();
         Consume(TokenType.LEFT_BRACKET, "Expect '[' after 'GoTo'");
-        Token label = Consume(TokenType.IDENTIFIER, "Expect label name after 'GoTo['"); // verificar que label exista
+        Token label = Consume(TokenType.IDENTIFIER, "Expect label name after 'GoTo['");
         Consume(TokenType.RIGHT_BRACKET, "Expect ']' after label name");
         Consume(TokenType.LEFT_PAREN, "Expect '(' after ']'");
         Expr condition = Expression();
         Consume(TokenType.RIGHT_PAREN, "Expect ')' after condition");
         return new Stmt.GoTo(label, condition);
     }
-
     private Stmt LabelStatement()
     {
         Token labelToken = Advance();
