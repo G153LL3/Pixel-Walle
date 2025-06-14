@@ -13,6 +13,7 @@ public class Interpreter
     private readonly int canvasHeight = 256; // dimensiones del canvas
     private string currentColor = "Transparent"; //pincel
     private int currentSize = 1; // pincel
+    //private readonly RobotContext robotContext = new RobotContext();
 
 
     public void Interpret(List<Stmt> statements)
@@ -38,6 +39,52 @@ public class Interpreter
         }
     }
 
+    public object VisitFunctionCallExpr(Expr.FunctionCall expr)
+    {
+        switch (expr.name.Lexeme)
+        {
+            case "GetActualX":
+                // validar que no tenga argumentos
+                if (expr.arguments.Count > 0)
+                {
+                    throw new RuntimeError(expr.name, "La función GetActualX no acepta argumentos");
+                }
+                return currentX;
+                
+            case "GetActualY":
+                // validar que no tenga argumentos
+                if (expr.arguments.Count > 0)
+                {
+                    throw new RuntimeError(expr.name, "La función GetActualY no acepta argumentos");
+                }
+                return currentY;
+
+            case "GetCanvasSize":
+                // validar que no tenga argumentos
+                if (expr.arguments.Count > 0)
+                {
+                    throw new RuntimeError(expr.name, "La función GetCanvasSize no acepta argumentos");
+                }
+                return canvasHeight;
+
+            case "IsBrushSize":
+                // validar que solo tenga 1 argumento
+                if (expr.arguments.Count != 1)
+                {
+                    throw new RuntimeError(expr.name, "La función IsBrushSize solo acepta un argumento");
+                }
+                Object firstarg = Evaluate(expr.arguments[0]);
+                if (!(firstarg is int))
+                {
+                    throw new RuntimeError(null, "IsBrushColor argument must be integer");        
+                }
+                int size = (int)firstarg;
+                if (size != currentSize) return 0;
+                return 1;
+            default:
+                throw new RuntimeError(expr.name, $"Función no definida: {expr.name.Lexeme}");
+        }
+    }
     private void CollectLabels(List<Stmt> statements)
     {
         labels.Clear();
@@ -60,8 +107,8 @@ public class Interpreter
         {
             throw new RuntimeError(null, "Spawn can only be used once");
         }
-        object xObj = Evaluate(stmt.X);
-        object yObj = Evaluate(stmt.Y);
+        Object xObj = Evaluate(stmt.X);
+        Object yObj = Evaluate(stmt.Y);
 
         if (!(xObj is int) || !(yObj is int))
         {

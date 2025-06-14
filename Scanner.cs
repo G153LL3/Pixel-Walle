@@ -28,15 +28,6 @@ public class Scanner
         {"DrawCircle", TokenType.DRAW_CIRCLE},
         {"DrawRectangle", TokenType.DRAW_RECTANGLE},
         {"Fill", TokenType.FILL},
-
-        //funciones
-        {"GetActualX", TokenType.GET_ACTUALX},
-        {"GetActualY", TokenType.GET_ACTUALY},
-        {"GetCanvasSize", TokenType.GET_CANVAS_SIZE},
-        {"GetColorCount", TokenType.GET_COLOR_COUNT},
-        {"IsBrushColor", TokenType.IS_BRUSH_COLOR},
-        {"IsBrushSize", TokenType.IS_BRUSH_SIZE},
-        {"IsCanvasColor", TokenType.IS_CANVAS_COLOR},
     };
 
 

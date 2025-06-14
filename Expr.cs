@@ -8,6 +8,24 @@ public abstract class Expr
 
     public abstract Object accept (Interpreter interpreter);
 
+    public class FunctionCall : Expr
+    {
+        public Token name;
+        public List<Expr> arguments;
+
+        public FunctionCall(Token name, List<Expr> arguments)
+        {
+            this.name = name;
+            this.arguments = arguments;
+        }
+
+        public override Object accept(Interpreter interpreter)
+        {
+            return interpreter.VisitFunctionCallExpr(this);
+            //return null;
+           
+        }
+    }
     public class Variable : Expr
     {
         public Token name;

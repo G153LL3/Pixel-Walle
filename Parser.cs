@@ -305,6 +305,10 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         {
             return new Expr.Literal(Previous().Literal);
         }   
+        if (Check(TokenType.IDENTIFIER) && CheckNext(TokenType.LEFT_PAREN))
+        {
+            return FunctionCall();
+        }
         if (Match(TokenType.IDENTIFIER))
         {
             return new Expr.Variable(Previous());
@@ -317,6 +321,28 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         }
         throw Error(Peek(), "Expect expression.");
         return new Expr.Literal(null);
+    }
+
+    private Expr FunctionCall()
+    {
+        Token name = Advance();
+        Consume(TokenType.LEFT_PAREN, "Expect '(' after function name");
+        List<Expr> arguments = new List<Expr>();
+        if (!Check(TokenType.RIGHT_PAREN))
+        {
+            do
+            {
+                // Validar que sea variable o literal (no otra función)
+                if (Check(TokenType.IDENTIFIER) && CheckNext(TokenType.LEFT_PAREN))
+                {
+                    throw Error(Peek(), "Functions are not allowed as arguments");
+                }
+
+                arguments.Add(Expression());
+            } while (Match(TokenType.COMMA)); //arreglar 
+        }
+        Consume(TokenType.RIGHT_PAREN, "Expect ')' after arguments");
+        return new Expr.FunctionCall(name, arguments);
     }
 
     private bool Match(params TokenType[] types)
