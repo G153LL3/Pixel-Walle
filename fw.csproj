@@ -1,11 +1,24 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Godot.NET.Sdk/4.1.3"> <!-- Cambia a SDK de Godot -->
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
+    
+    <!-- Deshabilita generación de atributos conflictivos -->
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+    
+    <!-- Elimina propiedades innecesarias para Godot -->
+    <!-- <OutputType>Exe</OutputType> -->  <!-- ¡Comentado/eliminado! -->
+    <!-- <StartupObject>Program</StartupObject> -->  <!-- ¡Comentado/eliminado! -->
+    
+    <!-- Mantén estas si las necesitas -->
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <StartupObject>Program</StartupObject>
   </PropertyGroup>
+
+  <!-- Añade este target para eliminar archivos conflictivos -->
+  <Target Name="RemoveConflictFiles" BeforeTargets="CoreCompile">
+    <Delete Files="$(IntermediateOutputPath).NETCoreApp,Version*.AssemblyAttributes.cs" />
+  </Target>
 
 </Project>

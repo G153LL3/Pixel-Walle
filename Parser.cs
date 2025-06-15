@@ -7,10 +7,10 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
     public List<Stmt> Parse()
     {
         List<Stmt> statements = new List<Stmt>();
-        while (!IsAtEnd())
+        while (!IsAtEnd() && !Check(TokenType.EOF))
         {
             try
-            {
+            {   
                 statements.Add(Declaration());
                 ConsumeNewline();
             
@@ -63,6 +63,7 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
 
     private Stmt Statement()
     {
+        //instrucciones
         if (Match(TokenType.SPAWN)) return SpawnStatement();
         if (Match(TokenType.COLOR)) return ColorStatement();
         if (Match(TokenType.SIZE)) return SizeStatement();
@@ -74,8 +75,7 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         if (Match(TokenType.PRINT)) return PrintStatement();
         if (Check(TokenType.IDENTIFIER)) return LabelStatement();
             
-        throw Error(Peek(), "Expect print statement, variable declaration, or label"); // arreglar nombre del error        
-        return null; 
+        throw Error(Peek(), "Invalid instruction"); 
     }
     private Stmt SpawnStatement()
     {
@@ -92,9 +92,7 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         Token colorToken = Previous();
         Consume(TokenType.LEFT_PAREN, "Expect '('");
         Token label = Consume(TokenType.IDENTIFIER, "Expect color name after 'Color('");
-
         Consume(TokenType.RIGHT_PAREN, "Expect ')'");
-        //return null;
         return new Stmt.Color(label); 
     }
     private Stmt SizeStatement()
@@ -103,7 +101,6 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         Consume(TokenType.LEFT_PAREN, "Expect '('");
         Expr k = Expression();
         Consume(TokenType.RIGHT_PAREN, "Expect ')'");
-        //return null;
         return new Stmt.Size(k);
     }
     private Stmt Draw_LineStatement()
@@ -116,7 +113,6 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         Consume(TokenType.COMMA, "Expect ','");
         Expr distance = Expression();
         Consume(TokenType.RIGHT_PAREN, "Expect ')'");
-        //return null;
         return new Stmt.Draw_Line(dirX, dirY, distance);
     }
     private Stmt Draw_CircleStatement()
@@ -129,7 +125,6 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         Consume(TokenType.COMMA, "Expect ','");
         Expr radius = Expression();
         Consume(TokenType.RIGHT_PAREN, "Expect ')'");
-        //return null;
         return new Stmt.Draw_Circle(dirX, dirY, radius);
     }
     private Stmt Draw_RectangleStatement()
@@ -146,7 +141,6 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         Consume(TokenType.COMMA, "Expect ','");
         Expr height = Expression();
         Consume(TokenType.RIGHT_PAREN, "Expect ')'");
-        //return null;
         return new Stmt.Draw_Rectangle(dirX, dirY, distance, width, height);
     }
     private Stmt FillStatement()
@@ -154,7 +148,6 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         Token fillToken = Previous();
         Consume(TokenType.LEFT_PAREN, "Expect '('");
         Consume(TokenType.RIGHT_PAREN, "Expect ')'");
-        //return null;
         return new Stmt.Fill();
     }
     private Stmt GoToStatement()
@@ -320,7 +313,6 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
             return new Expr.Grouping(expr);
         }
         throw Error(Peek(), "Expect expression.");
-        return new Expr.Literal(null);
     }
     private Expr FunctionCall()
     {
@@ -345,7 +337,7 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
                     arguments.Add(Expression());
                 }
 
-            } while (Match(TokenType.COMMA)); //arreglar 
+            } while (Match(TokenType.COMMA)); 
         }
         Consume(TokenType.RIGHT_PAREN, "Expect ')' after arguments");
         return new Expr.FunctionCall(name, arguments);

@@ -9,13 +9,16 @@ public class Interpreter
     private int currentLine = 0;
     private bool spawned = false;
     private int currentX, currentY; // pos actual
-    private readonly int canvasWidth = 256;
-    private readonly int canvasHeight = 256; // dimensiones del canvas
+    private readonly int canvasWidth = 100;
+    private readonly int canvasHeight = 100; // dimensiones del canvas
     private string currentColor = "Transparent"; //pincel
     private int currentSize = 1; // pincel
-    //private readonly RobotContext robotContext = new RobotContext();
+    
+    public void Reset()
+    {
+        spawned = false;
 
-
+    }
     public void Interpret(List<Stmt> statements)
     {
         try
@@ -47,7 +50,7 @@ public class Interpreter
                 // validar que no tenga argumentos
                 if (expr.arguments.Count > 0)
                 {
-                    throw new RuntimeError(expr.name, "La función GetActualX no acepta argumentos");
+                    throw new RuntimeError(expr.name, "The GetActualX function does not accept arguments");
                 }
                 return currentX;
                 
@@ -55,7 +58,7 @@ public class Interpreter
                 // validar que no tenga argumentos
                 if (expr.arguments.Count > 0)
                 {
-                    throw new RuntimeError(expr.name, "La función GetActualY no acepta argumentos");
+                    throw new RuntimeError(expr.name, "The GetActualY function does not accept arguments");
                 }
                 return currentY;
 
@@ -63,7 +66,7 @@ public class Interpreter
                 // validar que no tenga argumentos
                 if (expr.arguments.Count > 0)
                 {
-                    throw new RuntimeError(expr.name, "La función GetCanvasSize no acepta argumentos");
+                    throw new RuntimeError(expr.name, "The GetActualX function does not accept arguments");
                 }
                 return canvasHeight;
 
@@ -71,12 +74,12 @@ public class Interpreter
                 // validar que solo tenga 1 argumento
                 if (expr.arguments.Count != 1)
                 {
-                    throw new RuntimeError(expr.name, "La función IsBrushSize solo acepta un argumento");
+                    throw new RuntimeError(expr.name, "IsBrushSize requires 1 argument");
                 }
                 Object firstarg = Evaluate(expr.arguments[0]);
                 if (!(firstarg is int))
                 {
-                    throw new RuntimeError(null, "IsBrushColor argument must be integer");        
+                    throw new RuntimeError(null, "IsBrushSize argument must be integer");        
                 }
                 int size = (int)firstarg;
                 if (size == currentSize) return 1;
@@ -86,13 +89,13 @@ public class Interpreter
                 // validar que solo tenga 1 argumento
                 if (expr.arguments.Count != 1)
                 {
-                    throw new RuntimeError(expr.name, "La función IsBrushColor solo acepta un argumento");
+                    throw new RuntimeError(expr.name, "IsBrushColor requires 1 argument");
                 }
                 Object colorarg = Evaluate(expr.arguments[0]);
                 //comprobar q sea string
                 if (!(colorarg is string))
                 {
-                    throw new RuntimeError(expr.name, "Argumento invalido para IsBrushColor");
+                    throw new RuntimeError(expr.name, "Invalid argument for IsBrushColor");
                 }
                 string colorName = (string)colorarg;
                 if (colorName == currentColor) return 1;
@@ -100,14 +103,14 @@ public class Interpreter
             case "IsCanvasColor":
                 if (expr.arguments.Count != 3)
                 {
-                    throw new RuntimeError(expr.name, "La función IsCanvasColor solo acepta 3 argumentos");
+                    throw new RuntimeError(expr.name, "IsCanvasColor requires 3 arguments");
                 }
                 Object farg = Evaluate(expr.arguments[0]);
                 Object sarg = Evaluate(expr.arguments[1]);
                 Object targ = Evaluate(expr.arguments[2]);
                 if (!(farg is string) || !(sarg is int) || !(targ is int))
                 {
-                    throw new RuntimeError(expr.name, "Argumento invalido para IsCanvasColor");
+                    throw new RuntimeError(expr.name, "Invalid argument for IsCanvasColor");
                 }
                 string color = (string)farg;
                 int v = (int)sarg; int h = (int)targ;
@@ -121,7 +124,7 @@ public class Interpreter
             case "GetColorCount":    
                 if (expr.arguments.Count != 5)
                 {
-                    throw new RuntimeError(expr.name, "GetColorCount requiere 5 argumentos");
+                    throw new RuntimeError(expr.name, "GetColorCount requires 5 arguments");
                 }
                 Object colors = Evaluate(expr.arguments[0]);
                 Object X1 = Evaluate(expr.arguments[1]);
@@ -131,7 +134,7 @@ public class Interpreter
 
                 if (!(X1 is int) || !(X2 is int)|| !(Y1 is int) ||!(Y2 is int))
                 {
-                    throw new RuntimeError(expr.name, "Argumento invalido para GetColorCount");
+                    throw new RuntimeError(expr.name, "Invalid argument for GetColorCount");
                 }
                 string color1 = (string)colors;
                 int x1 = (int)X1;
@@ -140,9 +143,10 @@ public class Interpreter
                 int y2 = (int)Y2;
 
                 //rango
+                //comprobar area
                 return 0;
             default:
-                throw new RuntimeError(expr.name, $"Función no definida: {expr.name.Lexeme}");
+                throw new RuntimeError(expr.name, $"Undefined function: {expr.name.Lexeme}");
         }
     }
     private void CollectLabels(List<Stmt> statements)
@@ -199,8 +203,16 @@ public class Interpreter
             "Red", "Blue", "Green", "Yellow",
             "Orange", "Purple", "Black", "White", "Transparent"
         };
-
-        if (!validColors.Contains(color))
+        bool isValidColor = false;
+        foreach (string validColor in validColors)
+        {
+            if (color == validColor)
+            {
+                isValidColor = true;
+                break;
+            }
+        }
+        if (!isValidColor)
         {
             throw new RuntimeError(stmt.ColorToken, $"Color '{color}' is not supported");
         }
@@ -244,32 +256,33 @@ public class Interpreter
         int dirX = (int)dirXObj;
         int dirY = (int)dirYObj;
         int distance = (int)distanceObj;
-        if (Math.Abs(dirX) > 1 || Math.Abs(dirY) > 1)   
+        if (dirX == 0 && dirY == 0)
         {
-            throw new RuntimeError(null, "Direction values must be -1, 0, or 1");
+           throw new RuntimeError(null, "Invalid direction"); 
         }
+        if (Math.Abs(dirX) > 1 || Math.Abs(dirY) > 1)
+            {
+                throw new RuntimeError(null, "Direction values must be -1, 0, or 1");
+            }
         if (distance <= 0)
         {
             throw new RuntimeError(null, "Distance must be positive");
         }
+        
         int endX = currentX + dirX * distance;
         int endY = currentY + dirY * distance;
-
+        distance--;
         if (currentColor != "Transparent")
         {
-            /*
-            llamar a clase que haga la parte visual
-            Walle.DrawLine(_currentX, _currentY, endX, endY, dirX, dirY, distance);
-            */
+            Walle.DrawLine(currentX, currentY, endX, endY, dirX, dirY, distance, currentColor, currentSize);
         }
-        
+ 
         currentX = endX;
         currentY = endY;
-        //RANGO
         return null;
     }
 
-    public object VisitDrawRectangleStmt(Stmt.Draw_Rectangle stmt)
+    public object VisitDrawRectangleStmt(Stmt.Draw_Rectangle stmt) //bug?
     {
         Object dirXObj = Evaluate(stmt.DirX);
         Object dirYObj = Evaluate(stmt.DirY);
@@ -309,16 +322,13 @@ public class Interpreter
             int right = centerX + width / 2;
             int top = centerY - height / 2;
             int bottom = centerY + height / 2;
-            /*
-            // dibujar los cuatro lados del rectángulo
+
             Walle.DrawRectangleLines(left, top, right, bottom, currentColor, currentSize);
-            */
-            
+
         }
         // actualizar el walle al centro
         currentX = centerX;
         currentY = centerY;
-        //NO OLVIDAR REVISAR Q NO SE VAYA DE RANGO
         return null;
     }
     public Object VisitDrawCircleStmt(Stmt.Draw_Circle stmt)
@@ -350,9 +360,7 @@ public class Interpreter
         
         if (currentColor != "Transparent")
         {
-            /*
             Walle.DrawCircleOutline(centerX, centerY, radius, currentColor, currentSize);
-            */
         }
         currentX = centerX;
         currentY = centerY;
@@ -363,9 +371,7 @@ public class Interpreter
     {
         int x = currentX;
         int y = currentY;
-        /*
         Walle.FloodFill(x, y,currentColor, canvasWidth, canvasHeight);
-        */
         return null;
     }
 
@@ -400,8 +406,6 @@ public class Interpreter
     }
     public object VisitLabelStmt(Stmt.Label stmt)
     {
-        // solo registrar la etiqueta
-        // labels[stmt.name.Lexeme] = labels.Count; 
         return null;
     }
 
@@ -477,7 +481,9 @@ public class Interpreter
         public Object VisitVarStmt(Stmt.Var stmt) 
         {
             Object value = null;
-            if (stmt.initializer != null) 
+            environment.Declare(stmt.name.Lexeme);
+            
+            if (stmt.initializer != null)
             {
                 value = Evaluate(stmt.initializer);
             }

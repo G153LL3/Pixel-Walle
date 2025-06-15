@@ -1,7 +1,8 @@
-﻿using System;
+﻿
+using System;
 using System.Text;
 using System.Collections.Generic;
-
+using System.IO; // Necesario para StringWriter
 public static class Program
 { 
 
@@ -10,67 +11,86 @@ public static class Program
 
     static bool hadError = false;
     private static bool hadRuntimeError = false;
+     private static StringWriter outputCapture; // Para capturar la salida
 
+    public static void ResetState()
+    {
+        errors.Clear();
+        hadError = false;
+        hadRuntimeError = false;
+        interpreter.Reset();  
+       
+        // Limpia la captura de salida
+        if (outputCapture != null)
+        {
+            outputCapture.GetStringBuilder().Clear();
+        }
+    }
     public static void Main(string[] args)
     {
-        StringBuilder inputBuilder = new StringBuilder();
-
-        while (true)
+    }
+    public static void Initialize()
+    {
+        outputCapture = new StringWriter();
+        Console.SetOut(outputCapture);
+    }
+    
+    // Versión modificada de Run para uso en Godot
+    public static string Execute(string source)
+    {
+         ResetState();  
+        
+        try
         {
-            Console.Write("> ");  
-            string line = Console.ReadLine();
-             if (string.IsNullOrWhiteSpace(line)) continue;
-            // terminar entrada por ahora
-            if (line == null || line.Trim().Equals("salir", StringComparison.OrdinalIgnoreCase))
+            Scanner scanner = new Scanner(source);
+            List<Token> tokens = scanner.ScanTokens();
+            
+            if (errors.Count > 0)
             {
-                if (inputBuilder.Length > 0)
-                {
-                    Run(inputBuilder.ToString());
-                    inputBuilder.Clear();  
-                }
-                break;
-            } else {
-                inputBuilder.AppendLine(line);
+                return FormatErrors();
             }
+
+            Parser parser = new Parser(tokens);
+            List<Stmt> statements = parser.Parse();
+            
+            if (errors.Count > 0)
+            {
+                return FormatErrors();
+            }
+            
+            interpreter.Interpret(statements);
+            
+            // Combinar salida capturada + errores de runtime
+            string result = outputCapture.ToString();
+            if (hadRuntimeError)
+            {
+                result += "\n[RUNTIME ERROR] Execution aborted";
+            }
+            
+            return result;
+        }
+        catch (Exception ex)
+        {
+            return $"[UNHANDLED EXCEPTION] {ex.Message}\n{ex.StackTrace}";
         }
     }
-    private static void Run(string source)
+    private static string FormatErrors()
     {
-        errors.Clear(); // limpiar errores anteriores
-        Scanner scanner = new Scanner(source);
-        List<Token> tokens = scanner.ScanTokens();
-         if (errors.Count > 0)
+        StringBuilder sb = new StringBuilder();
+        sb.AppendLine("Errors found:");
+        foreach (var error in errors)
         {
-            Console.WriteLine("\nErrors found:");
-            foreach (var error in errors)
-            {
-                Console.WriteLine($"- {error}");
-            }
-            return;
+            sb.AppendLine($"- {error}");
         }
-
-        Parser parser = new Parser(tokens);
-    
-        List<Stmt> statements = parser.Parse();
-        if (errors.Count > 0)
-        {
-            Console.WriteLine("\nErrors found:");
-            foreach (var error in errors)
-            {
-                Console.WriteLine($"- {error}");
-            }
-            return;
-        }
-        interpreter.Interpret(statements);
+        return sb.ToString();
     }
     public static void Error(int linea, string message)
-    {   
+    {
         errors.Add($"[Line {linea}] {message}");
     }
     public static void RuntimeError(RuntimeError error)
     {
-        Console.Error.WriteLine(error.Message + 
-            $"\n[Line {error.token.Line}]");
+        errors.Add($"[RUNTIME ERROR] {error.Message}\n[Line {error.token.Line}]");
         hadRuntimeError = true;
     }
     private static void Report(int line, string where, string message)

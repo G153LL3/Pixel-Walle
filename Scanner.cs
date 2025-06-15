@@ -43,6 +43,11 @@ public class Scanner
             start = current;
             ScanToken(); // procesa
         }
+        // agregar un token de salto virtual al final (parche)
+        if (tokens.Count > 0 && tokens[^1].Type != TokenType.NEWLINE)
+        {
+            tokens.Add(new Token(TokenType.NEWLINE, "", null, line));
+        }
         tokens.Add(new Token(TokenType.EOF, "", null, line)); // fin 
         return tokens;
     }

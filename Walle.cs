@@ -1,35 +1,57 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
+using Godot;
+
 public class Walle
 {
+    public static void FloodFill(int x, int y, string newColor, int width, int height)
+{
+    // Verificar límites del canvas
+    if (x < 0 || x >= width || y < 0 || y >= height)
+        return;
 
-   
-    public void FloodFill(int x, int y, string color, int width, int height)
+    string targetColor = Canvas.GetPixel(x, y);
+    
+    // Si ya tiene el nuevo color, no hacer nada
+        if (targetColor == newColor)
+            return;
+
+    Queue<(int, int)> pixels = new Queue<(int, int)>();
+    bool[,] visited = new bool[width, height]; // Matriz de visitados
+
+    pixels.Enqueue((x, y));
+    visited[x, y] = true;
+
+    // Direcciones: derecha, izquierda, abajo, arriba
+    int[] dx = {1, -1, 0, 0};
+    int[] dy = {0, 0, 1, -1};
+
+    while (pixels.Count > 0)
     {
-        Queue<(int, int)> pixels = new Queue<(int, int)>();
-        pixels.Enqueue((x, y));
+        var (currentX, currentY) = pixels.Dequeue();
+        SetPixel(currentX, currentY, newColor);
 
-        while (pixels.Count > 0)
+        // Explorar vecinos en 4 direcciones
+        for (int i = 0; i < 4; i++)
         {
-            var (currentX, currentY) = pixels.Dequeue();
+            int nx = currentX + dx[i];
+            int ny = currentY + dy[i];
 
-            if (currentX < 0 || currentX >= width ||
-                currentY < 0 || currentY >= height)
+            // Verificar límites
+            if (nx < 0 || nx >= width || ny < 0 || ny >= height)
                 continue;
-
-            // Cambiar el color del píxel
-            SetPixel(currentX, currentY, color);
-
-            // Añadir píxeles vecinos (4-direcciones)
-            pixels.Enqueue((currentX + 1, currentY)); // derecha
-            pixels.Enqueue((currentX - 1, currentY)); // izquierda
-            pixels.Enqueue((currentX, currentY + 1)); // abajo
-            pixels.Enqueue((currentX, currentY - 1)); // arriba
+            
+            // Verificar si es del color objetivo y no visitado
+            if (!visited[nx, ny] && (Canvas.GetPixel(nx, ny) == targetColor))
+            {
+                visited[nx, ny] = true;
+                pixels.Enqueue((nx, ny));
+            }
         }
     }
+}
 
-    public void DrawCircleOutline(int centerX, int centerY, int radius, string color, int size)
+    public static void DrawCircleOutline(int centerX, int centerY, int radius, string color, int size)
     {
         // Implementación del algoritmo del punto medio para círculos
         int x = radius;
@@ -59,14 +81,14 @@ public class Walle
             }
         }
     }
-    public void DrawCirclePoint(int centerX, int centerY, int offsetX, int offsetY, string color, int size)
+    public static void DrawCirclePoint(int centerX, int centerY, int offsetX, int offsetY, string color, int size)
     {
         int x = centerX + offsetX;
         int y = centerY + offsetY;
         DrawPoint(x, y, color, size);
     }
-    
-    public void DrawRectangleLines(int left, int top, int right, int bottom, string color, int size)
+
+    public static void DrawRectangleLines(int left, int top, int right, int bottom, string color, int size)
     {
         // RECORDAR CAMBIAR DRAWLINEINTERNAL A DRAWLINE
 
@@ -81,7 +103,7 @@ public class Walle
 
     }
 
-    public void DrawLine(int startX, int startY, int endX, int endY, int dirX, int dirY, int distance, string color, int size)
+    public static void DrawLine(int startX, int startY, int endX, int endY, int dirX, int dirY, int distance, string color, int size)
     {
 
         for (int i = 0; i <= distance; i++)
@@ -93,8 +115,8 @@ public class Walle
             DrawPoint(x, y, color, size);
         }
     }
-    
-    public void DrawLineInternal(int startX, int startY, int endX, int endY, string color, int size)
+
+    public static void DrawLineInternal(int startX, int startY, int endX, int endY, string color, int size)
     {
         // Calcular dirección y distancia
         int dx = endX - startX;
@@ -115,7 +137,7 @@ public class Walle
             y += yIncrement;
         }
     }
-    public void DrawPoint(int x, int y, string color, int size)
+    public static void DrawPoint(int x, int y, string color, int size)
     {
         int radius = (size - 1) / 2;
         int intX = x;
@@ -131,8 +153,24 @@ public class Walle
             }
         }
     }
-    public void SetPixel(int x, int y, string color)
+    public static void SetPixel(int x, int y, string color)
     {
-        // implementar como voy a pintar 
-    }    
+        var colorMap = new Dictionary<string, Color>
+        {
+            { "Blue", Colors.Blue },
+            { "Red", Colors.Red },
+            { "Green", Colors.Green },
+            { "Yellow", Colors.Yellow},
+            { "Orange", Colors.Orange },
+            { "Purple", Colors.Purple },
+            { "Black", Colors.Black },
+            { "White", Colors.White },
+            { "Transparent", Colors.Transparent },
+        };
+        if (colorMap.TryGetValue(color, out Color colors))
+        {
+            Canvas.SetPixel(x, y, colors);
+        }        
+        
+    }
 }
