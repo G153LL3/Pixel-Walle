@@ -53,7 +53,7 @@ public class Interpreter
                     throw new RuntimeError(expr.name, "The GetActualX function does not accept arguments");
                 }
                 return currentX;
-                
+
             case "GetActualY":
                 // validar que no tenga argumentos
                 if (expr.arguments.Count > 0)
@@ -79,7 +79,7 @@ public class Interpreter
                 Object firstarg = Evaluate(expr.arguments[0]);
                 if (!(firstarg is int))
                 {
-                    throw new RuntimeError(null, "IsBrushSize argument must be integer");        
+                    throw new RuntimeError(null, "IsBrushSize argument must be integer");
                 }
                 int size = (int)firstarg;
                 if (size == currentSize) return 1;
@@ -119,8 +119,13 @@ public class Interpreter
                 int posv = currentY + v;
                 if (posh < 0 || posh >= canvasWidth || posv < 0 || posv >= canvasHeight)
                     return 0;
-                // comprobar si la casilla se pinto
-                return 0;
+
+                string colorpixel = Canvas.GetPixel(posh, posv);
+                //bug
+                
+                if (color == colorpixel) return 1;
+                    return 0;
+
             case "GetColorCount":    
                 if (expr.arguments.Count != 5)
                 {
@@ -481,7 +486,7 @@ public class Interpreter
         public Object VisitVarStmt(Stmt.Var stmt) 
         {
             Object value = null;
-            environment.Declare(stmt.name.Lexeme);
+            //environment.Declare(stmt.name.Lexeme);
             
             if (stmt.initializer != null)
             {
