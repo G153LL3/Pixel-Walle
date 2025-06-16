@@ -28,12 +28,12 @@ offset_right = 271.0
 offset_bottom = 102.0
 text = "SAVE"
 
-[node name="ImportButton" type="Button" parent="."]
+[node name="LoadButton" type="Button" parent="."]
 offset_left = 307.0
 offset_top = 46.0
 offset_right = 410.0
 offset_bottom = 103.0
-text = "IMPORT"
+text = "LOAD"
 
 [node name="TextureRect" type="TextureRect" parent="."]
 offset_left = 606.0
@@ -47,3 +47,8 @@ offset_left = 773.0
 offset_top = 49.0
 offset_right = 881.0
 offset_bottom = 109.0
+
+[connection signal="pressed" from="RunButton" to="." method="OnRunPressed"]
+[connection signal="pressed" from="SaveButton" to="." method="OnSavePressed"]
+[connection signal="pressed" from="LoadButton" to="." method="OnLoadPressed"]
+[connection signal="value_changed" from="SpinBox" to="TextureRect" method="_on_spin_box_value_changed"]
