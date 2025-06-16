@@ -3,9 +3,9 @@ using System;
 
 public partial class Canvas : TextureRect
 {
-    private Color[,] pixels;
-    [Export] private int gridSize = 20; // Tamaño de la cuadrícula (en bloques)
-    [Export] private int pixelSize = 20; // Tamaño de cada bloque en píxeles reales
+    private Color[,] pixels; // para almacenar colores de los pixeles
+    [Export] private int gridSize = 20; // tamaño de la cuadrícula (en bloques)
+    [Export] private int pixelSize = 20; // tamaño de cada bloque en píxeles reales
     [Export] private Color gridColor = new Color(0.8f, 0.8f, 0.8f);
 
     private Image _image;
@@ -13,56 +13,52 @@ public partial class Canvas : TextureRect
     public static Canvas Instance { get; private set; }
     public override void _Ready()
     {
-        Instance = this; // Asigna la instancia al crear
-        InitializeGrid();
-        GenerateTexture();
+        Instance = this;  // asigna la instancia al crear
+        InitializeGrid(); // inicializa matriz
+        GenerateTexture(); // crea la textura inicial
     }
 
     private void InitializeGrid()
     {
         pixels = new Color[gridSize, gridSize];
-        // Rellenar con blanco
         for (int x = 0; x < gridSize; x++)
         {
             for (int y = 0; y < gridSize; y++)
             {
-                pixels[x, y] = Colors.White;
+                pixels[x, y] = Colors.White; // blanco x defecto
             }
         }
     }
-
     private void GenerateTexture()
     {
-        // Calcular tamaño total de la textura
+        // calcular tamaño total de la textura
         int width = gridSize * pixelSize;
         int height = gridSize * pixelSize;
 
         _image = Image.Create(width, height, false, Image.Format.Rgba8);
         _texture = ImageTexture.CreateFromImage(_image);
         Texture = _texture;
-
-        UpdateTexture();
+        UpdateTexture(); // actualiza el contenido
     }
 
     private void UpdateTexture()
     {
-        // Limpiar imagen
+        // limpiar imagen
         _image.Fill(Colors.Transparent);
 
-        // Dibujar cada bloque
+        // dibujar cada bloque
         for (int x = 0; x < gridSize; x++)
         {
             for (int y = 0; y < gridSize; y++)
             {
-                // Dibujar el bloque de color
+                // dibujar el bloque de color
                 DrawBlock(x, y, pixels[x, y]);
             }
         }
-
-        // Dibujar líneas de la cuadrícula
+        // dibujar líneas de la cuadrícula
         DrawGridLines();
 
-        // Actualizar la textura
+        // actualizar la textura
         _texture.Update(_image);
     }
 
@@ -78,7 +74,6 @@ public partial class Canvas : TextureRect
                 _image.SetPixel(x, y, color);
             }
         }
-
     }
 
     private void DrawGridLines()
@@ -86,7 +81,7 @@ public partial class Canvas : TextureRect
         int width = gridSize * pixelSize;
         int height = gridSize * pixelSize;
 
-        // Dibujar líneas verticales
+        // dibujar líneas verticales
         for (int x = 0; x <= width; x += pixelSize)
         {
             for (int y = 0; y < height; y++)
@@ -95,7 +90,7 @@ public partial class Canvas : TextureRect
             }
         }
 
-        // Dibujar líneas horizontales
+        // dibujar líneas horizontales
         for (int y = 0; y <= height; y += pixelSize)
         {
             for (int x = 0; x < width; x++)
@@ -103,37 +98,33 @@ public partial class Canvas : TextureRect
                 _image.SetPixel(x, y, gridColor);
             }
         }
-        //SetPixel(5, 5, Colors.Green);
     }
 
     public void SetGridSize(int newSize)
     {
         if (newSize < 1) return;
         gridSize = newSize;
-        InitializeGrid();
-        GenerateTexture();
+        InitializeGrid(); // inicia matriz
+        GenerateTexture(); // crea textura
     }
-    public static void SetPixel(int x, int y, Color color)
+    public static void SetPixel(int x, int y, Color color) //pinta el pixel
     {
         if (Instance == null) return;
 
         if (x >= 0 && x < Instance.gridSize && y >= 0 && y < Instance.gridSize)
         {
             Instance.pixels[x, y] = color;
-            //Instance.DrawBlock(x, y, color);
-            //Instance._texture.Update(Instance._image);
-            Instance.UpdateTexture();
+            Instance.UpdateTexture(); // actualiza visualizacion (es muy lento)
         }
-
     }
 
     public void PaintPixel(Vector2 position)
     {
-        // Calcular posición en la cuadrícula
+        // calcular posición en la cuadrícula
         int gridX = (int)(position.X / pixelSize);
         int gridY = (int)(position.Y / pixelSize);
 
-        // Asegurarse de que está dentro de los límites
+        // asegurarse de que está dentro de los límites
         if (gridX >= 0 && gridX < gridSize && gridY >= 0 && gridY < gridSize)
         {
             SetPixel(gridX, gridY, Colors.Black);
@@ -141,22 +132,25 @@ public partial class Canvas : TextureRect
     }
     public static string GetPixel(int x, int y)
     {
-        string def = "Transparent";
-        if (Instance == null)
-            return def;
+        if (Instance == null) return "Transparent";
 
         if (x >= 0 && x < Instance.gridSize && y >= 0 && y < Instance.gridSize)
         {
-            Color pixelcolor = Instance.pixels[x, y];
-            string test = pixelcolor.ToString();
-
-            return test;
+            Color pixelColor = Instance.pixels[x, y];
+            return ConvertColorToName(pixelColor);
         }
-        else
-        {
-            return def;
-        }
-
-
+        return "Transparent";
+    }
+    private static string ConvertColorToName(Color c)
+    {
+        if (c == Colors.White) return "White";
+        if (c == Colors.Black) return "Black";
+        if (c == Colors.Blue) return "Blue";
+        if (c == Colors.Red) return "Red";
+        if (c == Colors.Purple) return "Purple";
+        if (c == Colors.Green) return "Green";
+        if (c == Colors.Orange) return "Orange";
+        if (c == Colors.Yellow) return "Yellow"; 
+        return "Transparent";
     }
 }

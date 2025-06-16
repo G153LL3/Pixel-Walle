@@ -323,7 +323,7 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         {
             do
             {
-                if (name.Lexeme == "IsBrushColor" || name.Lexeme == "IsCanvasColor" || name.Lexeme == "GetColorCount ")
+                if (name.Lexeme == "IsBrushColor" || name.Lexeme == "IsCanvasColor" || name.Lexeme == "GetColorCount")
                 {
                     arguments.Add(ParseArgument());
                 }

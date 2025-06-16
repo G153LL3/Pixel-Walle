@@ -37,7 +37,13 @@ text = "IMPORT"
 
 [node name="TextureRect" type="TextureRect" parent="."]
 offset_left = 606.0
-offset_top = 144.0
+offset_top = 139.0
 offset_right = 1115.0
-offset_bottom = 612.0
+offset_bottom = 621.0
 script = ExtResource("2_0e48y")
+
+[node name="SpinBox" type="SpinBox" parent="."]
+offset_left = 773.0
+offset_top = 49.0
+offset_right = 881.0
+offset_bottom = 109.0

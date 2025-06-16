@@ -1,5 +1,5 @@
-    using System;
-    using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 
 public class Interpreter
 {
@@ -9,8 +9,8 @@ public class Interpreter
     private int currentLine = 0;
     private bool spawned = false;
     private int currentX, currentY; // pos actual
-    private readonly int canvasWidth = 100;
-    private readonly int canvasHeight = 100; // dimensiones del canvas
+    private readonly int canvasWidth = 20;
+    private readonly int canvasHeight = 20; // dimensiones del canvas
     private string currentColor = "Transparent"; //pincel
     private int currentSize = 1; // pincel
     
@@ -100,6 +100,7 @@ public class Interpreter
                 string colorName = (string)colorarg;
                 if (colorName == currentColor) return 1;
                 return 0;
+
             case "IsCanvasColor":
                 if (expr.arguments.Count != 3)
                 {
@@ -113,20 +114,19 @@ public class Interpreter
                     throw new RuntimeError(expr.name, "Invalid argument for IsCanvasColor");
                 }
                 string color = (string)farg;
-                int v = (int)sarg; int h = (int)targ;
+                int v = (int)sarg;
+                int h = (int)targ;
 
                 int posh = currentX + h;
                 int posv = currentY + v;
                 if (posh < 0 || posh >= canvasWidth || posv < 0 || posv >= canvasHeight)
                     return 0;
-
-                string colorpixel = Canvas.GetPixel(posh, posv);
-                //bug
                 
-                if (color == colorpixel) return 1;
-                    return 0;
+                if (color == Canvas.GetPixel(posv, posh)) return 1;
+                return 0;
 
             case "GetColorCount":    
+
                 if (expr.arguments.Count != 5)
                 {
                     throw new RuntimeError(expr.name, "GetColorCount requires 5 arguments");
@@ -137,7 +137,7 @@ public class Interpreter
                 Object X2 = Evaluate(expr.arguments[3]);
                 Object Y2 = Evaluate(expr.arguments[4]);
 
-                if (!(X1 is int) || !(X2 is int)|| !(Y1 is int) ||!(Y2 is int))
+                if (!(colors is string) || !(X1 is int) || !(X2 is int)|| !(Y1 is int) ||!(Y2 is int))
                 {
                     throw new RuntimeError(expr.name, "Invalid argument for GetColorCount");
                 }
@@ -147,9 +147,29 @@ public class Interpreter
                 int y1 = (int)Y1;
                 int y2 = (int)Y2;
 
-                //rango
-                //comprobar area
-                return 0;
+                //verificar que no se vaya de rango
+                if (x1 < 0 || x1 >= canvasWidth || y1 < 0 || y1 >= canvasHeight ||
+                    x2 < 0 || x2 >= canvasWidth || y2 < 0 || y2 >= canvasHeight)
+                {
+                    return 0;
+                }
+                int startX = Math.Min(x1, x2);
+                int endX = Math.Max(x1, x2);
+                int startY = Math.Min(y1, y2);
+                int endY = Math.Max(y1, y2);
+                int count = 0; // cont de pixeles
+                for (int y = startY; y <= endY; y++)
+                {
+                    for (int x = startX; x <= endX; x++)
+                    {
+                        string colorCan = Canvas.GetPixel(y, x);
+                        if (colorCan == color1)
+                        {
+                            count++;
+                        }   
+                    }
+                }  
+                return count;
             default:
                 throw new RuntimeError(expr.name, $"Undefined function: {expr.name.Lexeme}");
         }
