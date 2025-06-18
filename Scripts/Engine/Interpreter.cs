@@ -9,11 +9,12 @@ public class Interpreter
     private int currentLine = 0;
     private bool spawned = false;
     private int currentX, currentY; // pos actual
-    private readonly int canvasWidth = 20;
-    private readonly int canvasHeight = 20; // dimensiones del canvas
+    private readonly int canvasWidth = Canvas.GridSize;
+    private readonly int canvasHeight = Canvas.GridSize; // dimensiones del canvas
     private string currentColor = "Transparent"; //pincel
     private int currentSize = 1; // pincel
     
+
     public void Reset()
     {
         spawned = false;

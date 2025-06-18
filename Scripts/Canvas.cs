@@ -4,15 +4,25 @@ using System;
 public partial class Canvas : TextureRect
 {
     private Color[,] pixels; // para almacenar colores de los pixeles
-    [Export] private int gridSize = 20; // tamaño de la cuadrícula (en bloques)
-    [Export] private int pixelSize = 20; // tamaño de cada bloque en píxeles reales
-    [Export] private Color gridColor = new Color(0.8f, 0.8f, 0.8f);
-
+    public int gridSize = 31; // tamaño de la cuadrícula (en bloques)
+    private int pixelSize = 1; // tamaño de cada bloque en píxeles reales
+    private Color gridColor = new Color(0.8f, 0.8f, 0.8f);
+    public static int GridSize; 
+   
     private Image _image;
     private ImageTexture _texture;
     public static Canvas Instance { get; private set; }
+
+    public void UpdateGridSize(int newSize)
+    {
+        gridSize = newSize;
+        InitializeGrid(); 
+        GenerateTexture();
+    }
+
     public override void _Ready()
     {
+        GridSize = gridSize; 
         Instance = this;  // asigna la instancia al crear
         InitializeGrid(); // inicializa matriz
         GenerateTexture(); // crea la textura inicial
@@ -56,7 +66,7 @@ public partial class Canvas : TextureRect
             }
         }
         // dibujar líneas de la cuadrícula
-        DrawGridLines();
+        //DrawGridLines();
 
         // actualizar la textura
         _texture.Update(_image);

@@ -7,10 +7,10 @@
 script = ExtResource("1_wtcfe")
 
 [node name="CodeEdit" type="CodeEdit" parent="."]
-offset_left = 9.0
-offset_top = 133.0
-offset_right = 518.0
-offset_bottom = 622.0
+offset_left = 25.0
+offset_top = 159.0
+offset_right = 660.0
+offset_bottom = 876.0
 placeholder_text = "Code Here🤖"
 gutters_draw_line_numbers = true
 
@@ -36,19 +36,20 @@ offset_bottom = 103.0
 text = "LOAD"
 
 [node name="TextureRect" type="TextureRect" parent="."]
-offset_left = 606.0
-offset_top = 139.0
-offset_right = 1115.0
-offset_bottom = 621.0
+texture_filter = 1
+offset_left = 765.0
+offset_top = 30.0
+offset_right = 1745.0
+offset_bottom = 888.0
 script = ExtResource("2_0e48y")
 
 [node name="SpinBox" type="SpinBox" parent="."]
-offset_left = 773.0
-offset_top = 49.0
-offset_right = 881.0
-offset_bottom = 109.0
+offset_left = 460.0
+offset_top = 44.0
+offset_right = 576.0
+offset_bottom = 97.0
 
 [connection signal="pressed" from="RunButton" to="." method="OnRunPressed"]
 [connection signal="pressed" from="SaveButton" to="." method="OnSavePressed"]
 [connection signal="pressed" from="LoadButton" to="." method="OnLoadPressed"]
-[connection signal="value_changed" from="SpinBox" to="TextureRect" method="_on_spin_box_value_changed"]
+[connection signal="value_changed" from="SpinBox" to="." method="_on_spin_box_value_changed"]

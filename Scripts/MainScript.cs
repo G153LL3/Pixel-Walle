@@ -2,6 +2,7 @@ using Godot;
 
 public partial class MainScript : Node
 {
+    private Canvas TargetCanvas;
     public CodeEdit codeEdit; 
 
     public Button runButton;
@@ -21,31 +22,35 @@ public partial class MainScript : Node
 		saveButton = GetNode<Button>("SaveButton");
 		loadButton = GetNode<Button>("LoadButton");
 
+        TargetCanvas = GetNode<Canvas>("TextureRect");
+
         spinBox = GetNode<SpinBox>("SpinBox");
 
         runButton.Pressed += OnRunPressed;
 		saveButton.Pressed += OnSavePressed;
 		loadButton.Pressed += OnLoadPressed;
 
-       // spinBox.ValueChanged += OnSpinBoxValueChanged;
-
 
         fileDialogSave = new FileDialog();
         fileDialogSave.Access = FileDialog.AccessEnum.Filesystem;
         fileDialogSave.FileMode = FileDialog.FileModeEnum.SaveFile;
-        fileDialogSave.Filters = new string[] { "*.gw" };
+        fileDialogSave.Filters = new string[] { "*.pw" };
 		AddChild(fileDialogSave);
 		fileDialogSave.FileSelected += _OnFileDialogSaveFileSelected;
 
         fileDialogLoad = new FileDialog();
 		fileDialogLoad.Access = FileDialog.AccessEnum.Filesystem;
 		fileDialogLoad.FileMode = FileDialog.FileModeEnum.OpenAny;
-		fileDialogLoad.Filters = new string[] { "*.gw" };
+		fileDialogLoad.Filters = new string[] { "*.pw" };
         AddChild(fileDialogLoad);
 		fileDialogLoad.FileSelected += _OnFileDialogLoadFileSelected;
 	
 
         Program.Initialize();
+    }
+    private void _on_spin_box_value_changed(float value)
+    {
+        TargetCanvas.UpdateGridSize((int)value);
     }
 
     private void OnRunPressed()
@@ -65,13 +70,6 @@ public partial class MainScript : Node
         fileDialogLoad.Size = new Vector2I(600, 400);
 
 	}
-    /*
-    public void OnSpinBoxValueChanged(double newValue)
-	{
-		Reset();
-		Dimension = (int)newValue;
-	}
-    */
     private void _OnFileDialogSaveFileSelected(string ruta)
     {
         GuardarArchivo(ruta);

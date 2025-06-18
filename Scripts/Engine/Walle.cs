@@ -5,10 +5,13 @@ using Godot;
 public class Walle
 {
     public static void FloodFill(int x, int y, string newColor, int width, int height)
-{
+    {
+        width = Canvas.GridSize();
+        height = Canvas
+
     // Verificar límites del canvas
-    if (x < 0 || x >= width || y < 0 || y >= height)
-        return;
+        if (x < 0 || x >= width || y < 0 || y >= height)
+            return;
 
     string targetColor = Canvas.GetPixel(x, y);
     
@@ -105,13 +108,10 @@ public class Walle
 
     public static void DrawLine(int startX, int startY, int endX, int endY, int dirX, int dirY, int distance, string color, int size)
     {
-
         for (int i = 0; i <= distance; i++)
         {
             int x = startX + dirX * i;
             int y = startY + dirY * i;
-
-            // Dibujar un punto en esta posición con el tamaño actual y el color actual
             DrawPoint(x, y, color, size);
         }
     }
@@ -142,7 +142,8 @@ public class Walle
         int radius = (size - 1) / 2;
         int intX = x;
         int intY = y;
-
+        
+        ///*
         // dibujar todos los píxeles en el área del pincel
         for (int dx = -radius; dx <= radius; dx++)
         {
@@ -152,9 +153,10 @@ public class Walle
                 SetPixel(intX + dx, intY + dy, color);
             }
         }
+        //*/
     }
     public static void SetPixel(int x, int y, string color)
-    {
+    {   
         var colorMap = new Dictionary<string, Color>
         {
             { "Blue", Colors.Blue },
