@@ -6,8 +6,6 @@ public class Walle
 {
     public static void FloodFill(int x, int y, string newColor, int width, int height)
     {
-        width = Canvas.GridSize();
-        height = Canvas
 
     // Verificar límites del canvas
         if (x < 0 || x >= width || y < 0 || y >= height)

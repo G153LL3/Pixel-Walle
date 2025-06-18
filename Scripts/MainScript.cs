@@ -50,6 +50,9 @@ public partial class MainScript : Node
     }
     private void _on_spin_box_value_changed(float value)
     {
+        
+        Canvas.GridSize = (int)value;
+        Program.UpdateCanvasSize();
         TargetCanvas.UpdateGridSize((int)value);
     }
 

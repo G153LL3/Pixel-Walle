@@ -13,13 +13,19 @@ public static class Program
     private static bool hadRuntimeError = false;
      private static StringWriter outputCapture; // Para capturar la salida
 
+    public static void UpdateCanvasSize()
+    {
+        interpreter.canvasHeight = Canvas.GridSize;
+        interpreter.canvasWidth = Canvas.GridSize;
+    }
+
     public static void ResetState()
     {
         errors.Clear();
         hadError = false;
         hadRuntimeError = false;
-        interpreter.Reset();  
-       
+        interpreter.Reset();
+
         // Limpia la captura de salida
         if (outputCapture != null)
         {
