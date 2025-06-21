@@ -93,7 +93,8 @@ codicionales y funciones predefinidas. Después de cada comando debe existir un 
 - Condition: es una variable booleana o una comparación. Si condition tiene valor verdadero
   el código continua su ejecución en la línea de la etiqueta correspondiente. Si tiene valor
   falso la línea se ignora.
-
+  
+---
 ## 4. Funciones 📈
 
 - **GetActualX()**  
