@@ -11,11 +11,6 @@ public class Environment
     {
         Enclosing = enclosing;
     }
-    public void Declare(string name)
-    {
-        declared.Add(name);
-        values[name] = null;  // Opcional: inicializar como null
-    }
 
     // Verificar si una variable está declarada
     public bool IsDeclared(string name)

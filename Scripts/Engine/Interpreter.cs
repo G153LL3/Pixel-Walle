@@ -308,7 +308,7 @@ public class Interpreter
         return null;
     }
 
-    public object VisitDrawRectangleStmt(Stmt.Draw_Rectangle stmt) //bug?
+    public object VisitDrawRectangleStmt(Stmt.Draw_Rectangle stmt) 
     {
         Object dirXObj = Evaluate(stmt.DirX);
         Object dirYObj = Evaluate(stmt.DirY);
@@ -397,7 +397,10 @@ public class Interpreter
     {
         int x = currentX;
         int y = currentY;
-        Walle.FloodFill(x, y,currentColor, canvasWidth, canvasHeight);
+        if (currentColor != "Transparent")
+        {
+            Walle.FloodFill(x, y,currentColor, canvasWidth, canvasHeight);
+        }
         return null;
     }
 
@@ -481,7 +484,7 @@ public class Interpreter
             return Evaluate(expr.expression);
         }
 
-        private Object Evaluate(Expr expr) // usa  el patron visitor
+        private Object Evaluate(Expr expr) 
         {
             return expr.accept(this);
         }
@@ -507,7 +510,6 @@ public class Interpreter
         public Object VisitVarStmt(Stmt.Var stmt) 
         {
             Object value = null;
-            //environment.Declare(stmt.name.Lexeme);
             
             if (stmt.initializer != null)
             {

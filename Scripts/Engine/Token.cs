@@ -28,10 +28,7 @@ public enum TokenType
 
     SPAWN, COLOR, SIZE, DRAW_CIRCLE,
     DRAW_LINE, DRAW_RECTANGLE,
-    FILL, GET_ACTUALX, GET_ACTUALY, 
-    GET_CANVAS_SIZE, GET_COLOR_COUNT,
-    IS_BRUSH_COLOR, IS_BRUSH_SIZE,
-    IS_CANVAS_COLOR,
+    FILL,
     // Fin de archivo
     EOF
 }  

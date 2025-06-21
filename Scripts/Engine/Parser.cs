@@ -350,20 +350,22 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
             Token colorToken = Advance();
             return new Expr.Literal(colorToken.Lexeme);
         }
+        
         // si es un número, tratarlo normalmente
         if (Match(TokenType.NUMBER))
         {
             return new Expr.Literal(Previous().Literal);
         }
     
-        // si es una variable
+        // si es una variable : fix
         if (Check(TokenType.IDENTIFIER))
         {
             return new Expr.Variable(Advance());
         }
+        
         throw Error(Peek(), "Expect color name, number, or variable");    
     }
-
+    
     private bool Match(params TokenType[] types)
     {
         foreach (TokenType type in types)

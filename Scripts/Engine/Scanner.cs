@@ -13,8 +13,6 @@ public class Scanner
     private static readonly Dictionary<string, TokenType> keywords = new Dictionary<string, TokenType>
     {
         // palabras clave del lenguaje
-        // añadir funciones 
-
         {"GoTo", TokenType.GOTO},
         {"true", TokenType.TRUE},
         {"false", TokenType.FALSE},
@@ -43,7 +41,7 @@ public class Scanner
             start = current;
             ScanToken(); // procesa
         }
-        // agregar un token de salto virtual al final (parche)
+        // agregar un token de salto virtual al final 
         if (tokens.Count > 0 && tokens[^1].Type != TokenType.NEWLINE)
         {
             tokens.Add(new Token(TokenType.NEWLINE, "", null, line));
@@ -148,7 +146,7 @@ public class Scanner
     private bool IsAlpha(char c) 
     {
         return (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z'
-        || c == '_');
+        || c == '_' || c == 'ñ' || c == 'Ñ');
 
         // no se si quitar las mayusculas
     }
