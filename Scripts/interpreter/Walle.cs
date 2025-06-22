@@ -7,10 +7,6 @@ public class Walle
     public static void FloodFill(int x, int y, string newColor, int width, int height)
     {
 
-    // Verificar límites del canvas
-        if (x < 0 || x >= width || y < 0 || y >= height)
-            return;
-
     string targetColor = Canvas.GetPixel(x, y);
     
     // Si ya tiene el nuevo color, no hacer nada

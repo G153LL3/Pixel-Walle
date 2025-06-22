@@ -33,7 +33,8 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
     // 5. Term (+, -)
     // 6. Comparison(<, <=, >, >=)
     // 7. Equality (==, !=)
-    // 8. Logic (&& ||)
+    // 8. Logic (&&)
+    // 9. Logic (||)
     private bool hadErrorInCurrentDeclaration = false;
     private readonly List<Token> tokens; // tokens generados por lexer
     private int current = 0; // pos del token actual
@@ -345,10 +346,17 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
 
     private Expr ParseArgument()
     {
+        // si es un color
         if (Check(TokenType.IDENTIFIER))
         {
-            Token colorToken = Advance();
-            return new Expr.Literal(colorToken.Lexeme);
+            Token color = Peek();
+            bool c = IsColor(color.Lexeme);   
+            if (c)
+            {
+                Token colorToken = Advance();
+                return new Expr.Literal(colorToken.Lexeme);
+            }
+            
         }
         
         // si es un número, tratarlo normalmente
@@ -357,7 +365,7 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
             return new Expr.Literal(Previous().Literal);
         }
     
-        // si es una variable : fix
+        // si es una variable
         if (Check(TokenType.IDENTIFIER))
         {
             return new Expr.Variable(Advance());
@@ -365,7 +373,23 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         
         throw Error(Peek(), "Expect color name, number, or variable");    
     }
-    
+    private static bool IsColor(string text)
+    {
+        string[] validColors = {
+            "Red", "Blue", "Green", "Yellow",
+            "Orange", "Purple", "Black", "White", "Transparent"
+        };
+        bool isValidColor = false;
+        foreach (string validColor in validColors)
+        {
+            if (text == validColor)
+            {
+                isValidColor = true;
+                break;
+            }
+        }
+        return isValidColor;
+    }
     private bool Match(params TokenType[] types)
     {
         foreach (TokenType type in types)
