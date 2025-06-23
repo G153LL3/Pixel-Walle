@@ -315,6 +315,7 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         }
         throw Error(Peek(), "Expect expression.");
     }
+
     private Expr FunctionCall()
     {
         Token name = Advance();
@@ -350,8 +351,7 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         if (Check(TokenType.IDENTIFIER))
         {
             Token color = Peek();
-            bool c = IsColor(color.Lexeme);   
-            if (c)
+            if (IsColor(color.Lexeme))
             {
                 Token colorToken = Advance();
                 return new Expr.Literal(colorToken.Lexeme);
@@ -373,6 +373,7 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         
         throw Error(Peek(), "Expect color name, number, or variable");    
     }
+
     private static bool IsColor(string text)
     {
         string[] validColors = {
@@ -390,6 +391,7 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
         }
         return isValidColor;
     }
+
     private bool Match(params TokenType[] types)
     {
         foreach (TokenType type in types)

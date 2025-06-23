@@ -51,7 +51,6 @@ public partial class MainScript : Node
     private void _on_spin_box_value_changed(float value)
     {
         Canvas.GridSize = (int)value; // actualizo el tamaño del canvas
-        Program.UpdateCanvasSize();  // actualiza el interprete en el cual se usa tbn el tamaño del canvas
         TargetCanvas.UpdateGridSize((int)value); // actauliza el canvas
     }
 

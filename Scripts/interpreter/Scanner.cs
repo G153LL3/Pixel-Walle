@@ -134,7 +134,7 @@ public class Scanner
         
         string text = source.Substring(start, current - start);
         
-        if (text[0] != '_' || text[0] >= '0' && text[0] <= '9') // las etiquetas solo pueden empezar con letras
+        if (text[0] != '_') // las etiquetas solo pueden empezar con letras
         {               
             TokenType type = keywords.ContainsKey(text) ? keywords[text] : TokenType.IDENTIFIER; // verificar si es palabra clave o identificador
             AddToken(type);

@@ -22,7 +22,6 @@ public abstract class Expr
         public override Object accept(Interpreter interpreter)
         {
             return interpreter.VisitFunctionCallExpr(this);
-            //return null;
            
         }
     }

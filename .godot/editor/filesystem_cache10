@@ -1,20 +1,20 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1750547405
+::res://::1750716193
 icon.svg::CompressedTexture2D/CompressedTexture2D::8997685431083987110::1749940009::1749947989::1::::<><><>0<>0<>e748554a48ccf16faa4cd2dfdf3e1912<>res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex::
-node_2d.tscn::PackedScene::7015503205234184345::1750486569::0::1::::<><><>0<>0<><>::uid://nhh5vqtiyes5::::res://Scripts/MainScript.cs<>uid://bsqn4ts0h7wyt::::res://Scripts/Canvas.cs
+node_2d.tscn::PackedScene::7015503205234184345::1750715561::0::1::::<><><>0<>0<><>::uid://nhh5vqtiyes5::::res://Scripts/MainScript.cs<>uid://bsqn4ts0h7wyt::::res://Scripts/Canvas.cs
 Readme.md::TextFile/TextFile::-1::1750483479::0::1::::<><><>0<>0<><>::
-::res://Code Examples/::1750482591
+::res://Code Examples/::1750707326
 ::res://Scripts/::1750483208
-Canvas.cs::CSharpScript::3683692049068502571::1750300747::0::1::::<>TextureRect<><>0<>0<><>::
-MainScript.cs::CSharpScript::927385332921487538::1750301901::0::1::::<>Node<><>0<>0<><>::
+Canvas.cs::CSharpScript::3683692049068502571::1750715780::0::1::::<>TextureRect<><>0<>0<><>::
+MainScript.cs::CSharpScript::927385332921487538::1750695517::0::1::::<>Node<><>0<>0<><>::
 ::res://Scripts/interpreter/::1750024094
 Environment.cs::CSharpScript/CSharpScript::1882117047620282721::1750302200::0::1::::<><><>0<>0<><>::
-Expr.cs::CSharpScript/CSharpScript::8038152993478684673::1749912062::0::1::::<><><>0<>0<><>::
-Interpreter.cs::CSharpScript/CSharpScript::2780571034363898578::1750372299::0::1::::<><><>0<>0<><>::
-Parser.cs::CSharpScript/CSharpScript::4320717299845716372::1750371982::0::1::::<><><>0<>0<><>::
-Program.cs::CSharpScript/CSharpScript::1380081384138944868::1750262176::0::1::::<><><>0<>0<><>::
+Expr.cs::CSharpScript::8038152993478684673::1750692892::0::1::::<><><>0<>0<><>::
+Interpreter.cs::CSharpScript::2780571034363898578::1750711286::0::1::::<><><>0<>0<><>::
+Parser.cs::CSharpScript::4320717299845716372::1750692218::0::1::::<><><>0<>0<><>::
+Program.cs::CSharpScript::1380081384138944868::1750694115::0::1::::<><><>0<>0<><>::
 RuntimeError.cs::CSharpScript/CSharpScript::90351951485423932::1748808294::0::1::::<><><>0<>0<><>::
-Scanner.cs::CSharpScript/CSharpScript::6748299348017693109::1750369496::0::1::::<><><>0<>0<><>::
+Scanner.cs::CSharpScript::6748299348017693109::1750684914::0::1::::<><><>0<>0<><>::
 Stmt.cs::CSharpScript/CSharpScript::6770572416390910548::1749907306::0::1::::<><><>0<>0<><>::
 Token.cs::CSharpScript/CSharpScript::3327311599559653464::1750369367::0::1::::<><><>0<>0<><>::
-Walle.cs::CSharpScript/CSharpScript::2325689256893371023::1750261524::0::1::::<><><>0<>0<><>::
+Walle.cs::CSharpScript::2325689256893371023::1750714677::0::1::::<><><>0<>0<><>::

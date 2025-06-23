@@ -9,8 +9,6 @@ public class Interpreter
     private int currentLine = 0;
     private bool spawned = false;
     private int currentX, currentY; // pos actual
-    public int canvasWidth = Canvas.GridSize;
-    public int canvasHeight = Canvas.GridSize; // dimensiones del canvas
     private string currentColor = "Transparent"; //pincel
     private int currentSize = 1; // pincel
     
@@ -69,7 +67,7 @@ public class Interpreter
                 {
                     throw new RuntimeError(expr.name, "The GetActualX function does not accept arguments");
                 }
-                return canvasHeight;
+                return Canvas.GridSize;
 
             case "IsBrushSize":
                 // validar que solo tenga 1 argumento
@@ -116,8 +114,7 @@ public class Interpreter
 
                 int posh = currentX + h;
                 int posv = currentY + v;
-                if (posh < 0 || posh >= canvasWidth || posv < 0 || posv >= canvasHeight)
-                    return 0;
+                IsValidPosition(posh, posv);
                 
                 if (color == Canvas.GetPixel(posv, posh)) return 1;
                 return 0;
@@ -274,7 +271,6 @@ public class Interpreter
 
         IsValidPosition(endX, endY);
 
-        distance--;
         if (currentColor != "Transparent")
         {
             Walle.DrawLine(currentX, currentY, endX, endY, dirX, dirY, distance, currentColor, currentSize);
@@ -325,7 +321,6 @@ public class Interpreter
             int bottom = centerY + height / 2;
 
             Walle.DrawRectangleLines(left, top, right, bottom, currentColor, currentSize);
-
         }
         // actualizar el walle al centro
         currentX = centerX;
@@ -370,14 +365,14 @@ public class Interpreter
         int y = currentY;
         if (currentColor != "Transparent")
         {
-            Walle.FloodFill(x, y,currentColor, canvasWidth, canvasHeight);
+            Walle.FloodFill(x, y,currentColor, Canvas.GridSize);
         }
         return null;
     }
 
     public void IsValidPosition(int x, int y)
     {
-        if (x < 0 || x >= canvasWidth || y < 0 || y >= canvasHeight)
+        if (x < 0 || x >= Canvas.GridSize || y < 0 || y >= Canvas.GridSize)
         {
             throw new RuntimeError(null, $"Position final outside the canvas");
         }
@@ -385,7 +380,7 @@ public class Interpreter
 
     public void IsPositive(int x)
     {
-        if (x <= 0)
+        if (x < 0)
         {
             throw new RuntimeError(null, "Value must be positive");
         }
@@ -414,7 +409,7 @@ public class Interpreter
         }
         if (x == 0 && y == 0)
         {
-            throw new RuntimeError(null, "Invalid direction");
+            //throw new RuntimeError(null, "Invalid direction");
         }
     }
 

@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Text;
 using System.Collections.Generic;
 using System.IO; // Necesario para StringWriter
@@ -13,12 +12,7 @@ public static class Program
     private static bool hadRuntimeError = false;
      private static StringWriter outputCapture; // Para capturar la salida
 
-    public static void UpdateCanvasSize()
-    {
-        interpreter.canvasHeight = Canvas.GridSize;
-        interpreter.canvasWidth = Canvas.GridSize;
-    }
-
+    
     public static void ResetState()
     {
         errors.Clear();
