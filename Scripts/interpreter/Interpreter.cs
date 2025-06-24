@@ -16,6 +16,7 @@ public class Interpreter
     public void Reset()
     {
         spawned = false;
+        environment = new Environment();
 
     }
     public void Interpret(List<Stmt> statements)
@@ -442,12 +443,13 @@ public class Interpreter
         }
         return null;
     }
+    // devuelve el valor almacenado en el nodo
     public object VisitLabelStmt(Stmt.Label stmt)
     {
         return null;
     }
 
-    public Object VisitLiteralExpr(Expr.Literal expr) // devuelve el valor almacenado en el nodo
+    public Object VisitLiteralExpr(Expr.Literal expr) 
     {
         return expr.value;
     }

@@ -122,7 +122,10 @@ public class Scanner
                     Identifier();
                 } else {
                     Program.Error(line, "Unexpected character.");
-                    Advance();
+                    if (!IsAtEnd())
+                    {
+                        Advance();
+                    }
                 }
                 break;
         }
@@ -190,6 +193,7 @@ public class Scanner
 
     private char Advance() // consume el siguiente caracter
     {
+        if (IsAtEnd()) return '\0';
         current++;
         char c = source[current - 1];
         return c;

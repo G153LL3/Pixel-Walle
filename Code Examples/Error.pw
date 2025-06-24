@@ -1,0 +1,3 @@
+Spawn(100,0)
+Color(Blue);
+DrawLine(1,0,) print n

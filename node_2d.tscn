@@ -49,7 +49,6 @@ offset_top = 42.0
 offset_right = 576.0
 offset_bottom = 95.0
 
-[connection signal="pressed" from="RunButton" to="." method="OnRunPressed"]
 [connection signal="pressed" from="SaveButton" to="." method="OnSavePressed"]
 [connection signal="pressed" from="LoadButton" to="." method="OnLoadPressed"]
 [connection signal="value_changed" from="SpinBox" to="." method="_on_spin_box_value_changed"]

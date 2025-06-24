@@ -35,7 +35,6 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
     // 7. Equality (==, !=)
     // 8. Logic (&&)
     // 9. Logic (||)
-    private bool hadErrorInCurrentDeclaration = false;
     private readonly List<Token> tokens; // tokens generados por lexer
     private int current = 0; // pos del token actual
 
@@ -80,7 +79,6 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
     }
     private Stmt SpawnStatement()
     {
-        Token spawnToken = Previous();
         Consume(TokenType.LEFT_PAREN, "Expect '('");
         Expr x = Expression();
         Consume(TokenType.COMMA, "Expect ','");
@@ -90,7 +88,6 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
     }
     private Stmt ColorStatement()
     {
-        Token colorToken = Previous();
         Consume(TokenType.LEFT_PAREN, "Expect '('");
         Token label = Consume(TokenType.IDENTIFIER, "Expect color name after 'Color('");
         Consume(TokenType.RIGHT_PAREN, "Expect ')'");
@@ -98,7 +95,6 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
     }
     private Stmt SizeStatement()
     {
-        Token sizeToken = Previous();
         Consume(TokenType.LEFT_PAREN, "Expect '('");
         Expr k = Expression();
         Consume(TokenType.RIGHT_PAREN, "Expect ')'");
@@ -106,7 +102,6 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
     }
     private Stmt Draw_LineStatement()
     {
-        Token drawlineToken = Previous();
         Consume(TokenType.LEFT_PAREN, "Expect '('");
         Expr dirX = Expression();
         Consume(TokenType.COMMA, "Expect ','");
@@ -118,7 +113,6 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
     }
     private Stmt Draw_CircleStatement()
     {
-        Token drawcircleToken = Previous();
         Consume(TokenType.LEFT_PAREN, "Expect '('");
         Expr dirX = Expression();
         Consume(TokenType.COMMA, "Expect ','");
@@ -130,7 +124,6 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
     }
     private Stmt Draw_RectangleStatement()
     {
-        Token drawrectangleToken = Previous();
         Consume(TokenType.LEFT_PAREN, "Expect '('");
         Expr dirX = Expression();
         Consume(TokenType.COMMA, "Expect ','");
@@ -146,14 +139,12 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
     }
     private Stmt FillStatement()
     {
-        Token fillToken = Previous();
         Consume(TokenType.LEFT_PAREN, "Expect '('");
         Consume(TokenType.RIGHT_PAREN, "Expect ')'");
         return new Stmt.Fill();
     }
     private Stmt GoToStatement()
     {
-        Token gotoToken = Previous();
         Consume(TokenType.LEFT_BRACKET, "Expect '[' after 'GoTo'");
         Token label = Consume(TokenType.IDENTIFIER, "Expect label name after 'GoTo['");
         Consume(TokenType.RIGHT_BRACKET, "Expect ']' after label name");
@@ -183,12 +174,6 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
             initializer = Expression();
         } 
         return new Stmt.Var(name, initializer);
-    }
-
-    private Stmt ExpressionStatement() 
-    {
-        Expr expr = Expression();       
-        return new Stmt.Expression(expr);
     }
 
     private Expr LogicOr()
@@ -358,7 +343,6 @@ public class Parser // convierte los tokens en un ast usando analisis descendent
             }
             
         }
-        
         // si es un número, tratarlo normalmente
         if (Match(TokenType.NUMBER))
         {
