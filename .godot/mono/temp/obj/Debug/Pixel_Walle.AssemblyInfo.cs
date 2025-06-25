@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Pixel_Walle")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e362cfccee67fb8d0b66444b416e6576d860029c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+70160b01a1065e662cf9489e88e1a67f58a5fb5f")]
 [assembly: System.Reflection.AssemblyProductAttribute("Pixel_Walle")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Pixel_Walle")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

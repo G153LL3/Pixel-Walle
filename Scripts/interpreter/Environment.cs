@@ -18,7 +18,7 @@ public class Environment
         if (declared.Contains(name)) return true;
         return Enclosing?.IsDeclared(name) ?? false;
     }
-
+    // retorna el valor 
     public Object Get(Token name)
     {
         if (values.TryGetValue(name.Lexeme, out object value))
@@ -30,6 +30,7 @@ public class Environment
 
         throw new RuntimeError(name, $"Undeclared variable'{name.Lexeme}'");
     }
+    // almacena variables con sus valores
     public void Define(string name, Object value) 
     {
         values[name] = value;

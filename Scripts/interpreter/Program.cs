@@ -10,10 +10,10 @@ public static class Program
 
     static bool hadError = false;
     private static bool hadRuntimeError = false;
-     private static StringWriter outputCapture; // Para capturar la salida
+    private static StringWriter outputCapture; // Para capturar la salida
 
     
-    public static void ResetState()
+    public static void ResetState() // reinicia todo antes de una nueva ejecucion 
     {
         errors.Clear();
         hadError = false;
@@ -29,7 +29,7 @@ public static class Program
     public static void Main(string[] args)
     {
     }
-    public static void Initialize()
+    public static void Initialize() // configura captura de salida
     {
         outputCapture = new StringWriter();
         Console.SetOut(outputCapture);
@@ -42,24 +42,28 @@ public static class Program
         
         try
         {
+            // 1.Escaneo 
             Scanner scanner = new Scanner(source);
             List<Token> tokens = scanner.ScanTokens();
-            
+
+            // 2.Verifico errores léxicos
             if (errors.Count > 0)
             {
                 return FormatErrors();
             }
-
+            // 3.Parsing
             Parser parser = new Parser(tokens);
             List<Stmt> statements = parser.Parse();
             
+            // 4.Verifico errores sintácticos
             if (errors.Count > 0)
             {
                 return FormatErrors();
             }
-            
+            // 5.Evaluo
             interpreter.Interpret(statements);
             
+            // 6.Retorno resultados
             // Combinar salida capturada + errores de runtime
             string result = outputCapture.ToString();
             if (hadRuntimeError)
@@ -74,7 +78,7 @@ public static class Program
             return $"[UNHANDLED EXCEPTION] {ex.Message}\n{ex.StackTrace}";
         }
     }
-    private static string FormatErrors()
+    private static string FormatErrors() // formatea lista de errores
     {
         StringBuilder sb = new StringBuilder();
         sb.AppendLine("Errors found:");
@@ -84,21 +88,17 @@ public static class Program
         }
         return sb.ToString();
     }
-    public static void Error(int linea, string message)
+    public static void Error(int linea, string message) // para errores de lexer/parser
     {
         errors.Add($"[Line {linea}] {message}");
     }
-    public static void RuntimeError(RuntimeError error)
+    public static void RuntimeError(RuntimeError error) // para errores en tiempo de ejecucion 
     {
         errors.Add($"[RUNTIME ERROR] {error.Message}\n[Line {error.token.Line}]");
         hadRuntimeError = true;
     }
-    private static void Report(int line, string where, string message)
-    {
-        Console.Error.WriteLine("[Line " + line + "] Error" + where + ": " + message);
-        hadError = true;
-    }
-    public static void Error(Token token, string message)
+    
+    public static void Error(Token token, string message) // con token
     {
         errors.Add($"[Line {token.Line}] {message}");
     }    

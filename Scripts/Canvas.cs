@@ -45,9 +45,9 @@ public partial class Canvas : TextureRect
         int width = gridSize * pixelSize;
         int height = gridSize * pixelSize;
 
-        _image = Image.Create(width, height, false, Image.Format.Rgba8);
-        _texture = ImageTexture.CreateFromImage(_image);
-        Texture = _texture;
+        _image = Image.Create(width, height, false, Image.Format.Rgba8); // crea imagen en blanco
+        _texture = ImageTexture.CreateFromImage(_image); // crea textura desde imagen
+        Texture = _texture; // asigna la   textura al texture rect
         UpdateTexture(); // actualiza el contenido
     }
 

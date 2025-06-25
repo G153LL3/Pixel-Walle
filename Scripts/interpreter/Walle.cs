@@ -8,7 +8,7 @@ public class Walle
     {
         string targetColor = Canvas.GetPixel(x, y);
         
-        // Si ya tiene el nuevo color, no hacer nada
+        // Si ya tiene el nuevo color, no hacer nadax
             if (targetColor == newColor)
                 return;
 

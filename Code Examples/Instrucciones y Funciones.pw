@@ -1,0 +1,30 @@
+Spawn(15,15)
+Color(Blue)
+Size(3)
+Fill()
+
+a <_GetColorCount(Blue,0,0,1,1)
+print a
+a <_IsCanvasColor(Red,0,0)
+print a
+
+x <_ GetActualX()
+y <_ GetActualY()
+print x
+print y
+
+n <_ IsBrushColor(Blue)
+m <_ IsBrushSize(3)
+print n
+print m
+
+n <_ GetCanvasSize()
+print n
+
+Size(1)
+Color(Black)
+DrawCircle(0,0,3)
+Color(Transparent)
+DrawLine(0,-1,8)
+Color(Black)
+DrawRectangle(0,0,0,8,4)
